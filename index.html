@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>雪怪暖燈二重奏</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <meta name="apple-mobile-web-app-title" content="雪怪暖燈"> <link rel="apple-touch-icon" href="Banner5.jpg"> <title>雪怪暖燈二重奏</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,30 +18,43 @@
             color: #475569;
             -webkit-tap-highlight-color: transparent;
             letter-spacing: 0.05em;
-            padding-bottom: env(safe-area-inset-bottom);
+            /* 關鍵：讓底部留白適應 iPhone 的 Home Bar */
+            padding-bottom: env(safe-area-inset-bottom); 
         }
         
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Banner 遮罩 */
         .banner-mask {
             border-radius: 0 0 40px 40px;
             box-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.5);
         }
 
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .glass-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #3B82F6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: scale(1.05);
+        }
+
         /* 底部導覽列按鈕樣式 */
         .nav-btn {
-            color: #94a3b8; /* 預設灰色 */
+            color: #94a3b8;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
         
-        /* 選中狀態：深藍色背景，白色文字，強烈按鈕感 */
         .nav-btn.active {
             color: white;
-            background-color: #3B82F6; /* deep-blue */
+            background-color: #3B82F6;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
             transform: translateY(-2px);
         }
@@ -58,21 +72,23 @@
 </head>
 <body>
 
-<div id="app" class="pb-32 min-h-screen relative"> <header class="relative w-full h-[320px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
+<div id="app" class="pb-32 min-h-screen relative">
+
+    <header class="relative w-full h-[320px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
         <div class="absolute inset-0 bg-cover bg-left" style="background-image: url('Banner5.jpg');"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/30"></div>
         
         <div class="absolute top-3 right-4 text-white drop-shadow-md text-right z-30">
-            <h1 class="text-3xl font-bold tracking-widest opacity-95 text-shadow-sm leading-snug">
+            <h1 class="text-3xl font-bold tracking-widest opacity-95 text-shadow-sm leading-snug" style="font-family: 'Zen Maru Gothic', sans-serif;">
                 雪怪暖燈<br>二重奏
             </h1>
             <div class="mt-1 flex justify-end">
-                <span class="text-[10px] font-bold tracking-widest opacity-80 border-t border-white/60 pt-1 block">
+                <span class="text-[10px] font-bold tracking-widest opacity-80 border-t border-white/60 pt-1 block" style="font-family: 'Zen Maru Gothic', sans-serif;">
                     2026.02.03 - 02.10
                 </span>
             </div>
         </div>
-        </header>
+    </header>
 
     <main class="-mt-6 px-4 relative z-10">
 
@@ -246,7 +262,7 @@
                 // Day 1: 2/3
                 { id: 101, date: '2026-02-03', name: 'IT216 桃園 - 羽田', category: '航班', startTime: '00:10', hours: '00:10-04:00', ticket: '', note: '第三航廈', transportType: '', travelTime: '' },
                 { id: 102, date: '2026-02-03', name: '羽田機場換 JR PASS', category: '其他', startTime: '06:00', hours: '', ticket: '', note: '第二航廈旅行服務中心', transportType: 'walk', travelTime: '機場內' },
-                { id: 103, date: '2026-02-03', name: '羽田機場 - 東京車站', category: '交通', startTime: '07:00', hours: '', ticket: 'JR PASS', note: '單軌電車至濱松町轉山手線', transportType: 'transit', travelTime: '40分' },
+                { id: 103, date: '2026-02-03', name: '移動至東京車站', category: '交通', startTime: '07:00', hours: '', ticket: 'JR PASS', note: '單軌電車至濱松町轉山手線', transportType: 'transit', travelTime: '40分' },
                 { id: 104, date: '2026-02-03', name: '東京 - 山形', category: '交通', startTime: '08:56', hours: '08:56-11:38', ticket: 'JR PASS', note: 'Tsubasa 129 新幹線', transportType: 'transit', travelTime: '2.5hr' },
                 { id: 105, date: '2026-02-03', name: '山形車站午餐', category: '美食', startTime: '11:40', hours: '', ticket: '', note: '米澤牛便當?', transportType: 'walk', travelTime: '0分' },
                 { id: 106, date: '2026-02-03', name: '山形 - 藏王溫泉', category: '交通', startTime: '13:20', hours: '', ticket: '1200円', note: '東口巴士總站第一月台', transportType: 'transit', travelTime: '40分', timetableId: 'zao_bus' },
@@ -381,10 +397,6 @@
                 } 
             };
 
-            const printBooklet = () => {
-                window.print();
-            };
-
             onMounted(() => expenseForm.value.date = new Date().toISOString().split('T')[0]);
 
             return {
@@ -394,8 +406,7 @@
                 showBusModal, currentBusSchedule, currentBusRoute, locationGlossary, insuranceInfo,
                 tabClass, getCategoryColor, transportIcon, getExpenseIcon,
                 openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
-                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal,
-                printBooklet
+                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal
             };
         }
     }).mount('#app');
