@@ -140,12 +140,10 @@
                 <h3 class="font-bold text-red-500 mb-3 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 緊急聯絡 (日本)</h3>
                 <div class="flex justify-around text-center gap-4">
                     <a href="tel:110" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition">
-                        <div class="text-3xl mb-1">👮</div>
-                        <div class="text-sm font-bold text-gray-700">警察 110</div>
+                        <div class="text-3xl mb-1">👮</div><div class="text-sm font-bold text-gray-700">警察 110</div>
                     </a>
                     <a href="tel:119" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition">
-                        <div class="text-3xl mb-1">🚑</div>
-                        <div class="text-sm font-bold text-gray-700">救護/火警 119</div>
+                        <div class="text-3xl mb-1">🚑</div><div class="text-sm font-bold text-gray-700">救護/火警 119</div>
                     </a>
                 </div>
             </div>
@@ -260,7 +258,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v6.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v9.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -308,13 +306,15 @@
                     route: '藏王溫泉 - 山形駅前',
                     schedule: [ { dep: '08:40', arr: '09:15' }, { dep: '09:40', arr: '10:15' }, { dep: '10:40', arr: '11:15' }, { dep: '11:40', arr: '12:15' }, { dep: '12:40', arr: '13:15' } ]
                 },
+                // Updated with correct Yamagata -> Sendai times
                 'sendai_jr_rapid': {
-                    route: 'JR 仙山線 (快速) 山形 - 仙台',
-                    schedule: [ { dep: '09:05', arr: '10:19' }, { dep: '10:04', arr: '11:15' }, { dep: '11:03', arr: '12:15' }, { dep: '12:00', arr: '13:11' }, { dep: '13:02', arr: '14:14' } ]
+                    route: 'JR 仙山線 (山形發)',
+                    schedule: [ { dep: '08:18', arr: '09:43' }, { dep: '09:12', arr: '10:35' }, { dep: '10:16', arr: '11:42' }, { dep: '11:05', arr: '12:26' }, { dep: '12:00', arr: '13:21' } ]
                 },
+                // Updated with standard high-frequency intervals
                 'sendai_bus_express': {
-                    route: '高速巴士 山形 - 仙台',
-                    schedule: [ { dep: '09:20', arr: '10:28' }, { dep: '09:40', arr: '10:48' }, { dep: '10:00', arr: '11:08' }, { dep: '10:20', arr: '11:28' }, { dep: '10:40', arr: '11:48' } ]
+                    route: '高速巴士 (山形發)',
+                    schedule: [ { dep: '08:30', arr: '09:37' }, { dep: '08:45', arr: '09:52' }, { dep: '09:00', arr: '10:07' }, { dep: '09:15', arr: '10:22' }, { dep: '09:30', arr: '10:37' }, { dep: '09:45', arr: '10:52' } ]
                 },
                 'misawa_aomori_train': {
                     route: '青之森鐵道 三澤 - 青森',
@@ -344,7 +344,7 @@
                 { id: 304, date: '2026-02-05', name: '善治郎牛舌 (Zanjiro)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台名物！站前本店', transportType: 'walk', travelTime: '5分' },
                 { id: 305, date: '2026-02-05', name: '仙台車站大爆買', category: '購物', startTime: '13:00', hours: 'S-PAL / Parco', ticket: '', note: '伴手禮、服飾、雜貨', transportType: 'walk', travelTime: '0分' },
                 { id: 306, date: '2026-02-05', name: 'Clis Road 商店街', category: '購物', startTime: '16:00', hours: '', ticket: '', note: '藥妝店激戰區', transportType: 'walk', travelTime: '10分' },
-                { id: 307, date: '2026-02-05', name: '蔵の庄 (芹菜鍋晚餐)', category: '美食', startTime: '18:30', hours: '', ticket: '建議預約', note: '冬季限定仙台芹鍋、圍爐裏燒', transportType: 'walk', travelTime: '5分' },
+                { id: 307, date: '2026-02-05', name: '米澤牛燒肉 仔虎 (S-PAL店)', category: '美食', startTime: '18:30', hours: '', ticket: '建議預約', note: '不吃魚的好選擇：A5仙台牛燒肉', transportType: 'walk', travelTime: '5分' },
                 { id: 308, date: '2026-02-05', name: '回飯店整理 & 寄行李', category: '其他', startTime: '20:30', hours: '', ticket: '', note: '黑貓宅急便寄往星野奧入瀨', transportType: 'walk', travelTime: '10分' },
 
                 // Day 4: 2/6
@@ -352,14 +352,17 @@
                 { id: 402, date: '2026-02-06', name: '大石田 - 銀山溫泉', category: '交通', startTime: '13:00', hours: '', ticket: '', note: '接駁巴士', transportType: 'transit', travelTime: '40分' },
                 { id: 403, date: '2026-02-06', name: '御宿 やなだ屋', category: '住宿', startTime: '15:00', hours: '', ticket: '', note: 'Check-in', transportType: 'walk', travelTime: '5分' },
                 { id: 404, date: '2026-02-06', name: '銀山溫泉街夜拍', category: '景點', startTime: '17:30', hours: '', ticket: '', note: '神隱少女場景', transportType: 'walk', travelTime: '0分' },
-                // Day 5: 2/7
+                
+                // Day 5: 2/7 (Precise Times)
                 { id: 501, date: '2026-02-07', name: '銀山 - 大石田', category: '交通', startTime: '08:25', hours: '08:25-09:01', ticket: '', note: '接駁車', transportType: 'transit', travelTime: '40分' },
-                { id: 502, date: '2026-02-07', name: 'Tsubasa 136 往山形', category: '交通', startTime: '09:31', hours: '09:31-10:02', ticket: '', note: '', transportType: 'transit', travelTime: '30分' },
-                { id: 503, date: '2026-02-07', name: '山形 - 仙台 - 八戶', category: '交通', startTime: '11:00', hours: '', ticket: '', note: '仙山線快速 + Hayabusa 15', transportType: 'transit', travelTime: '2hr' },
-                { id: 504, date: '2026-02-07', name: '八戶車站接駁', category: '交通', startTime: '13:50', hours: '', ticket: '', note: '往奧入瀨', transportType: 'transit', travelTime: '1.5hr' },
-                { id: 505, date: '2026-02-07', name: '星野奧入瀨溪流飯店', category: '住宿', startTime: '15:30', hours: '', ticket: '', note: 'Check-in', transportType: 'transit', travelTime: '0分' },
-                { id: 506, date: '2026-02-07', name: '青森蘋果廚房', category: '美食', startTime: '19:20', hours: '', ticket: '', note: '晚餐 Buffet', transportType: 'walk', travelTime: '館內' },
-                { id: 507, date: '2026-02-07', name: '夜觀冰瀑', category: '景點', startTime: '21:15', hours: '', ticket: '', note: '飯店活動', transportType: 'transit', travelTime: '專車' },
+                { id: 502, date: '2026-02-07', name: 'Tsubasa 136 往山形', category: '交通', startTime: '09:31', hours: '09:31-10:04', ticket: '已預約', note: '大石田 - 山形 (已用周遊券預約)', transportType: 'transit', travelTime: '30分' },
+                { id: 503, date: '2026-02-07', name: '山形 - 仙台', category: '交通', startTime: '10:12', hours: '10:12-11:35', ticket: '', note: 'JR 仙山線快速', transportType: 'transit', travelTime: '1.2hr' },
+                { id: 504, date: '2026-02-07', name: '仙台 - 八戶', category: '交通', startTime: '11:55', hours: '11:55-13:04', ticket: '已預約', note: 'Hayabusa 15 (已用周遊券預約)', transportType: 'transit', travelTime: '1hr' },
+                { id: 505, date: '2026-02-07', name: '八戶車站接駁', category: '交通', startTime: '13:50', hours: '', ticket: '', note: '往奧入瀨', transportType: 'transit', travelTime: '1.5hr' },
+                { id: 506, date: '2026-02-07', name: '星野奧入瀨溪流飯店', category: '住宿', startTime: '15:30', hours: '', ticket: '', note: 'Check-in', transportType: 'transit', travelTime: '0分' },
+                { id: 507, date: '2026-02-07', name: '青森蘋果廚房', category: '美食', startTime: '19:20', hours: '', ticket: '', note: '晚餐 Buffet', transportType: 'walk', travelTime: '館內' },
+                { id: 508, date: '2026-02-07', name: '夜觀冰瀑', category: '景點', startTime: '21:15', hours: '', ticket: '', note: '飯店活動', transportType: 'transit', travelTime: '專車' },
+                
                 // Day 6: 2/8
                 { id: 601, date: '2026-02-08', name: '蘋果廚房早餐', category: '美食', startTime: '08:30', hours: '', ticket: '', note: '', transportType: 'walk', travelTime: '館內' },
                 { id: 602, date: '2026-02-08', name: '奧入瀨溪流 Bus Tour', category: '景點', startTime: '13:25', hours: '', ticket: '', note: '', transportType: 'transit', travelTime: '' },
