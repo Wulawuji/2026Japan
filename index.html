@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 只保留 Zen Maru Gothic (圓體) 與 Noto Sans TC */
+        /* 字體設定：Zen Maru Gothic (圓體) */
         @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
         
         body {
@@ -39,7 +39,7 @@
         }
         .glass-btn.active {
             background: rgba(255, 255, 255, 0.9);
-            color: #3B82F6; /* deep-blue */
+            color: #3B82F6;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transform: scale(1.05);
         }
@@ -283,7 +283,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v16.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v17.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -328,15 +328,15 @@
                 },
                 'yamagata_return_bus': {
                     route: '藏王溫泉 - 山形駅前',
-                    schedule: [ { dep: '08:40', arr: '09:15' }, { dep: '09:40', arr: '10:15' }, { dep: '10:40', arr: '11:15' }, { dep: '11:40', arr: '12:15' }, { dep: '12:40', arr: '13:15' } ]
+                    schedule: [ { dep: '07:50', arr: '08:35' }, { dep: '08:40', arr: '09:25' }, { dep: '09:40', arr: '10:25' }, { dep: '10:20', arr: '11:05' }, { dep: '11:20', arr: '12:05' }, { dep: '12:20', arr: '13:05' }, { dep: '13:20', arr: '14:05' }, { dep: '14:20', arr: '15:05' } ]
                 },
                 'sendai_jr_rapid': {
                     route: 'JR 仙山線 (山形發)',
-                    schedule: [ { dep: '09:12', arr: '10:35' }, { dep: '10:16', arr: '11:42' }, { dep: '11:05', arr: '12:26' }, { dep: '12:00', arr: '13:21' }, { dep: '12:50', arr: '14:12' } ]
+                    schedule: [ { dep: '09:08', arr: '10:30' }, { dep: '10:12', arr: '11:35' }, { dep: '10:59', arr: '12:26' }, { dep: '12:00', arr: '13:21' }, { dep: '12:51', arr: '14:17' }, { dep: '13:49', arr: '15:10' }, { dep: '15:08', arr: '16:33' } ]
                 },
                 'sendai_bus_express': {
-                    route: '高速巴士 (山形發)',
-                    schedule: [ { dep: '08:30', arr: '09:37' }, { dep: '08:45', arr: '09:52' }, { dep: '09:00', arr: '10:07' }, { dep: '09:15', arr: '10:22' }, { dep: '09:30', arr: '10:37' }, { dep: '09:45', arr: '10:52' } ]
+                    route: '高速巴士 (山形車站前1號)',
+                    schedule: [ { dep: '09:13', arr: '10:21' }, { dep: '09:23', arr: '10:31' }, { dep: '09:33', arr: '10:41' }, { dep: '09:43', arr: '10:51' }, { dep: '09:53', arr: '11:01' }, { dep: '10:03', arr: '11:11' }, { dep: '10:18', arr: '11:26' } ]
                 },
                 'misawa_aomori_train': {
                     route: '青之森鐵道 三澤 - 青森',
@@ -351,7 +351,7 @@
                 { id: 103, date: '2026-02-03', name: '羽田機場 - 東京車站', category: '交通', startTime: '07:00', hours: '', ticket: 'JR PASS', note: '單軌電車至濱松町轉山手線', transportType: 'transit', travelTime: '40分' },
                 { id: 104, date: '2026-02-03', name: '東京 - 山形', category: '交通', startTime: '08:56', hours: '08:56-11:38', ticket: 'JR PASS', note: 'Tsubasa 129 新幹線', transportType: 'transit', travelTime: '2.5hr' },
                 { id: 105, date: '2026-02-03', name: '山形車站午餐', category: '美食', startTime: '11:40', hours: '', ticket: '', note: '米澤牛便當?', transportType: 'walk', travelTime: '0分' },
-                { id: 106, date: '2026-02-03', name: '巴士往藏王溫泉', category: '交通', startTime: '13:20', hours: '', ticket: '1200円', note: '東口巴士總站第一月台', transportType: 'transit', travelTime: '40分', timetableId: 'zao_bus' },
+                { id: 106, date: '2026-02-03', name: '山形 - 藏王溫泉', category: '交通', startTime: '13:20', hours: '', ticket: '1200円', note: '東口巴士總站第一月台', transportType: 'transit', travelTime: '40分', timetableId: 'zao_bus' },
                 { id: 107, date: '2026-02-03', name: '高見屋 瑠璃俱樂度假區', category: '住宿', startTime: '15:00', hours: 'Check-in', ticket: '', note: '藏王溫泉 Check-in', transportType: 'walk', travelTime: '10分' },
                 
                 // Day 2: 2/4
@@ -499,4 +499,3 @@
 </script>
 </body>
 </html>
-
