@@ -100,7 +100,10 @@
                             <h3 v-else class="font-bold text-lg text-gray-700 mb-1 flex flex-wrap items-center gap-2">
                                 {{ item.name }}
                                 <button v-if="item.timetableId" @click.stop="openBusModal(item.timetableId)" class="text-xs bg-deep-blue text-white px-3 py-1 rounded-full flex items-center gap-1 hover:bg-blue-600 shadow-md transition-transform active:scale-95">
-                                    <i class="fa-solid fa-bus"></i> 時刻表
+                                    <i class="fa-solid fa-clock"></i> {{ item.timetableLabel || '時刻表' }}
+                                </button>
+                                <button v-if="item.timetableId2" @click.stop="openBusModal(item.timetableId2)" class="text-xs bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-600 shadow-md transition-transform active:scale-95">
+                                    <i class="fa-solid fa-clock"></i> {{ item.timetableLabel2 }}
                                 </button>
                             </h3>
                             
@@ -132,6 +135,21 @@
         </div>
 
         <div v-if="currentTab === 'info'" class="space-y-6 pt-4 pb-20 fade-in">
+            
+            <div class="bg-red-50 p-5 rounded-3xl border border-red-100 shadow-sm">
+                <h3 class="font-bold text-red-500 mb-3 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 緊急聯絡 (日本)</h3>
+                <div class="flex justify-around text-center gap-4">
+                    <a href="tel:110" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition">
+                        <div class="text-3xl mb-1">👮</div>
+                        <div class="text-sm font-bold text-gray-700">警察 110</div>
+                    </a>
+                    <a href="tel:119" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition">
+                        <div class="text-3xl mb-1">🚑</div>
+                        <div class="text-sm font-bold text-gray-700">救護/火警 119</div>
+                    </a>
+                </div>
+            </div>
+
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-calculator mr-2 text-ice-blue"></i> 匯率小幫手</h3>
                 <div class="flex gap-2 items-center">
@@ -168,6 +186,12 @@
                     <div class="flex justify-between items-start"><div class="text-xs bg-gray-100 px-2 py-1 rounded-lg text-gray-500 font-bold">{{ hotel.date }}</div><a :href="'https://www.google.com/maps/search/?api=1&query='+hotel.address" target="_blank" class="text-deep-blue bg-blue-50 w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-location-arrow"></i></a></div>
                     <div class="font-bold text-gray-800 mt-2 text-lg">{{ hotel.name }}</div><div class="text-xs text-gray-500 mt-1 font-medium">{{ hotel.address }}</div><div class="text-xs text-gray-400 mt-2 font-medium flex items-center"><i class="fa-solid fa-phone mr-2 text-ice-blue"></i> {{ hotel.phone }}</div>
                 </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-yellow-200 bg-yellow-50/30">
+                <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-file-shield mr-2 text-yellow-500"></i> 旅遊保險資訊</h3>
+                <textarea v-model="insuranceInfo" placeholder="請在此輸入保險公司、保單號碼、海外緊急救援電話..." class="w-full p-3 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 h-24 focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400 outline-none"></textarea>
+                <p class="text-[10px] text-gray-400 mt-2 text-right">*系統會自動儲存您輸入的內容</p>
             </div>
         </div>
 
@@ -220,7 +244,7 @@
     <div v-if="showBusModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" @click.self="showBusModal = false">
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
             <button @click="showBusModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
-            <h3 class="text-xl font-bold mb-1 text-center text-gray-800"><i class="fa-solid fa-bus text-deep-blue mr-2"></i>巴士時刻表</h3>
+            <h3 class="text-xl font-bold mb-1 text-center text-gray-800"><i class="fa-solid fa-bus text-deep-blue mr-2"></i>巴士/JR 時刻表</h3>
             <p class="text-center text-xs text-gray-400 mb-4">{{ currentBusRoute }}</p>
             <div class="overflow-y-auto max-h-[60vh] rounded-xl border border-gray-100">
                 <table class="w-full text-sm text-center"><thead class="bg-blue-50 text-deep-blue font-bold sticky top-0"><tr><th class="py-2">出發</th><th class="py-2">抵達</th></tr></thead><tbody class="divide-y divide-gray-50 text-gray-600"><tr v-for="time in currentBusSchedule" class="odd:bg-white even:bg-gray-50/50"><td class="py-2 font-mono font-bold">{{ time.dep }}</td><td class="py-2 font-mono">{{ time.arr }}</td></tr></tbody></table>
@@ -236,7 +260,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v4.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v6.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -252,14 +276,17 @@
             const showBusModal = ref(false);
             const currentBusSchedule = ref([]);
             const currentBusRoute = ref('');
+            const insuranceInfo = ref(localStorage.getItem('trip_insurance') || '');
+
+            watch(insuranceInfo, (newVal) => localStorage.setItem('trip_insurance', newVal));
 
             const days = [
                 { date: '2026-02-03', weekday: 'Tue', dayNum: '3', location: '東京/山形', intro: '藏王溫泉（Zao Onsen）以強酸性硫磺泉聞名，冬季的「樹冰」奇景更是世界級景觀，被稱為「雪怪」。' },
                 { date: '2026-02-04', weekday: 'Wed', dayNum: '4', location: '藏王溫泉', intro: '搭乘藏王纜車可俯瞰壯觀的樹冰原。這裡也是滑雪勝地，擁有單板雙板都適合的廣闊雪道。' },
-                { date: '2026-02-05', weekday: 'Thu', dayNum: '5', location: '山形/仙台', intro: '仙台是東北購物天堂！從車站連接的 S-PAL、Parco，到著名的 Clis Road 商店街，藥妝、服飾、雜貨應有盡有。午餐必吃善治郎牛舌。' },
+                { date: '2026-02-05', weekday: 'Thu', dayNum: '5', location: '山形/仙台', intro: '仙台是東北購物天堂！從車站連接的 S-PAL、Parco，到著名的 Clis Road 商店街，藥妝、服飾、雜貨應有盡有。晚餐推薦仙台冬季限定的「芹菜鍋」。' },
                 { date: '2026-02-06', weekday: 'Fri', dayNum: '6', location: '銀山溫泉', intro: '銀山溫泉（Ginzan Onsen）保留了大正浪漫時期的木造建築，夜晚煤氣燈亮起時，彷彿進入《神隱少女》的世界。' },
                 { date: '2026-02-07', weekday: 'Sat', dayNum: '7', location: '奧入瀨', intro: '奧入瀨溪流（Oirase Gorge）冬季會形成壯觀的冰瀑，星野度假村提供專屬的冰瀑夜遊活動。' },
-                { date: '2026-02-08', weekday: 'Sun', dayNum: '8', location: '青森屋', intro: '日本本州最北端的縣，壯麗的自然風光如世界遺產白神山地、十和田湖、奧入瀨溪流、熱鬧的傳統青森睡魔祭和美味的特產蘋果、海鮮、日本酒而聞名，四季分明，擁有獨特的魅力。 ' },
+                { date: '2026-02-08', weekday: 'Sun', dayNum: '8', location: '青森屋', intro: '日本本州最北端的縣，壯麗的自然風光如世界遺產白神山地、十和田湖、奧入瀨溪流、熱鬧的傳統青森睡魔祭和美味的特產蘋果、海鮮、日本酒而聞名，四季分明，擁有獨特的魅力。' },
                 { date: '2026-02-09', weekday: 'Mon', dayNum: '9', location: '青森屋', intro: '星野青森屋可以完整體驗青森文化，包含著名的「睡魔祭」燈籠裝飾與露天風呂「浮湯」。' },
                 { date: '2026-02-10', weekday: 'Tue', dayNum: '10', location: '青森/返台', intro: '旅程終點，可以在青森市區購買蘋果派、蘋果汁等伴手禮。' },
             ];
@@ -280,6 +307,18 @@
                 'yamagata_return_bus': {
                     route: '藏王溫泉 - 山形駅前',
                     schedule: [ { dep: '08:40', arr: '09:15' }, { dep: '09:40', arr: '10:15' }, { dep: '10:40', arr: '11:15' }, { dep: '11:40', arr: '12:15' }, { dep: '12:40', arr: '13:15' } ]
+                },
+                'sendai_jr_rapid': {
+                    route: 'JR 仙山線 (快速) 山形 - 仙台',
+                    schedule: [ { dep: '09:05', arr: '10:19' }, { dep: '10:04', arr: '11:15' }, { dep: '11:03', arr: '12:15' }, { dep: '12:00', arr: '13:11' }, { dep: '13:02', arr: '14:14' } ]
+                },
+                'sendai_bus_express': {
+                    route: '高速巴士 山形 - 仙台',
+                    schedule: [ { dep: '09:20', arr: '10:28' }, { dep: '09:40', arr: '10:48' }, { dep: '10:00', arr: '11:08' }, { dep: '10:20', arr: '11:28' }, { dep: '10:40', arr: '11:48' } ]
+                },
+                'misawa_aomori_train': {
+                    route: '青之森鐵道 三澤 - 青森',
+                    schedule: [ { dep: '09:20', arr: '10:34' }, { dep: '10:50', arr: '12:12' } ]
                 }
             };
 
@@ -300,12 +339,13 @@
                 
                 // Day 3: 2/5 (Shopping Focused)
                 { id: 301, date: '2026-02-05', name: '巴士返回山形車站', category: '交通', startTime: '08:40', hours: '', ticket: '1200円', note: '藏王巴士總站', transportType: 'walk', travelTime: '10分', timetableId: 'yamagata_return_bus' },
-                { id: 302, date: '2026-02-05', name: 'JR 往仙台', category: '交通', startTime: '09:30', hours: '', ticket: '', note: '山形 - 仙台 (Sendai) 快速', transportType: 'transit', travelTime: '1hr 15m' },
+                { id: 302, date: '2026-02-05', name: '移動：山形 - 仙台', category: '交通', startTime: '09:30', hours: '', ticket: '', note: '自由選擇 JR 或 巴士', transportType: 'transit', travelTime: '1hr 15m', timetableId: 'sendai_jr_rapid', timetableLabel: 'JR 時刻', timetableId2: 'sendai_bus_express', timetableLabel2: '巴士時刻' },
                 { id: 303, date: '2026-02-05', name: 'Richmond Hotel (寄行李)', category: '住宿', startTime: '11:00', hours: '', ticket: '', note: '先至飯店寄放行李', transportType: 'walk', travelTime: '8分' },
                 { id: 304, date: '2026-02-05', name: '善治郎牛舌 (Zanjiro)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台名物！站前本店', transportType: 'walk', travelTime: '5分' },
                 { id: 305, date: '2026-02-05', name: '仙台車站大爆買', category: '購物', startTime: '13:00', hours: 'S-PAL / Parco', ticket: '', note: '伴手禮、服飾、雜貨', transportType: 'walk', travelTime: '0分' },
                 { id: 306, date: '2026-02-05', name: 'Clis Road 商店街', category: '購物', startTime: '16:00', hours: '', ticket: '', note: '藥妝店激戰區', transportType: 'walk', travelTime: '10分' },
-                { id: 307, date: '2026-02-05', name: '回飯店整理 & 寄行李', category: '其他', startTime: '20:00', hours: '', ticket: '', note: '黑貓宅急便寄往星野奧入瀨', transportType: 'walk', travelTime: '10分' },
+                { id: 307, date: '2026-02-05', name: '蔵の庄 (芹菜鍋晚餐)', category: '美食', startTime: '18:30', hours: '', ticket: '建議預約', note: '冬季限定仙台芹鍋、圍爐裏燒', transportType: 'walk', travelTime: '5分' },
+                { id: 308, date: '2026-02-05', name: '回飯店整理 & 寄行李', category: '其他', startTime: '20:30', hours: '', ticket: '', note: '黑貓宅急便寄往星野奧入瀨', transportType: 'walk', travelTime: '10分' },
 
                 // Day 4: 2/6
                 { id: 401, date: '2026-02-06', name: '仙台 - 山形 - 大石田', category: '交通', startTime: '10:00', hours: '', ticket: '', note: '轉乘往銀山', transportType: 'transit', travelTime: '1.5hr' },
@@ -332,7 +372,7 @@
                 // Day 8: 2/10
                 { id: 801, date: '2026-02-10', name: 'Noresore 早餐', category: '美食', startTime: '07:15', hours: '', ticket: '', note: '', transportType: 'walk', travelTime: '館內' },
                 { id: 802, date: '2026-02-10', name: '接駁至三沢駅', category: '交通', startTime: '09:00', hours: '', ticket: '', note: '', transportType: 'transit', travelTime: '20分' },
-                { id: 803, date: '2026-02-10', name: '三沢 - 青森', category: '交通', startTime: '09:20', hours: '09:20-10:34', ticket: '', note: '青之森鐵道', transportType: 'transit', travelTime: '1.2hr' },
+                { id: 803, date: '2026-02-10', name: '三沢 - 青森', category: '交通', startTime: '09:20', hours: '09:20-10:34', ticket: '', note: '青之森鐵道', transportType: 'transit', travelTime: '1.2hr', timetableId: 'misawa_aomori_train', timetableLabel: '鐵道時刻' },
                 { id: 804, date: '2026-02-10', name: '青森 - 青森機場', category: '交通', startTime: '12:30', hours: '12:30-13:05', ticket: '', note: 'JR巴士東北', transportType: 'transit', travelTime: '35分' },
                 { id: 805, date: '2026-02-10', name: 'BR121 青森 - 桃園', category: '航班', startTime: '15:30', hours: '15:30-19:00', ticket: '', note: '第一航廈', transportType: 'walk', travelTime: '' }
             ];
@@ -420,7 +460,7 @@
                 currentTab, days, selectedDayIndex, currentWeather,
                 currentDayItems, flights, hotels, shoppingList, expenses, totalExpense, sortedExpenses,
                 rate, calcJpy, showModal, isEditing, form, showShopModal, shopForm, showExpenseModal, expenseForm,
-                showBusModal, currentBusSchedule, currentBusRoute, locationGlossary,
+                showBusModal, currentBusSchedule, currentBusRoute, locationGlossary, insuranceInfo,
                 tabClass, getCategoryColor, transportIcon, getExpenseIcon,
                 openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
                 handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal
