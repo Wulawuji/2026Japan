@@ -199,10 +199,6 @@
 
     </main>
 
-    <div class="text-center pb-8 pt-4">
-        <button onclick="resetItinerary()" class="text-xs text-gray-400 underline hover:text-blue-500 bg-gray-50 px-4 py-2 rounded-full"><i class="fa-solid fa-rotate-right mr-1"></i>🔄 重置為官方行程</button>
-    </div>
-
     <div v-if="showModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="closeModal">
         <div class="bg-white w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-slide-up">
             <h3 class="text-xl font-bold mb-4 text-gray-800">{{ isEditing ? '編輯行程' : '新增行程' }}</h3>
@@ -225,9 +221,9 @@
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
             <button @click="showBusModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
             <h3 class="text-xl font-bold mb-1 text-center text-gray-800"><i class="fa-solid fa-bus text-deep-blue mr-2"></i>巴士時刻表</h3>
-            <p class="text-center text-xs text-gray-400 mb-4">山形駅前 - 藏王溫泉</p>
+            <p class="text-center text-xs text-gray-400 mb-4">{{ currentBusRoute }}</p>
             <div class="overflow-y-auto max-h-[60vh] rounded-xl border border-gray-100">
-                <table class="w-full text-sm text-center"><thead class="bg-blue-50 text-deep-blue font-bold sticky top-0"><tr><th class="py-2">山形駅發</th><th class="py-2">藏王著</th></tr></thead><tbody class="divide-y divide-gray-50 text-gray-600"><tr v-for="time in currentBusSchedule" class="odd:bg-white even:bg-gray-50/50"><td class="py-2 font-mono font-bold">{{ time.dep }}</td><td class="py-2 font-mono">{{ time.arr }}</td></tr></tbody></table>
+                <table class="w-full text-sm text-center"><thead class="bg-blue-50 text-deep-blue font-bold sticky top-0"><tr><th class="py-2">出發</th><th class="py-2">抵達</th></tr></thead><tbody class="divide-y divide-gray-50 text-gray-600"><tr v-for="time in currentBusSchedule" class="odd:bg-white even:bg-gray-50/50"><td class="py-2 font-mono font-bold">{{ time.dep }}</td><td class="py-2 font-mono">{{ time.arr }}</td></tr></tbody></table>
             </div>
             <p class="text-[10px] text-gray-400 mt-3 text-center">*此為預定表，實際以現場為準</p>
         </div>
@@ -240,16 +236,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    // 官方行程資料版本 (更新這裡會強制更新使用者資料)
-    const DATA_VERSION = '2026-v2.0'; 
-
-    window.resetItinerary = () => {
-        if(confirm('確定要清除所有自訂行程修改，並重置為官方最新版嗎？')) {
-            localStorage.removeItem('trip_itinerary');
-            localStorage.setItem('data_version', DATA_VERSION);
-            location.reload();
-        }
-    };
+    const DATA_VERSION = '2026-v4.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -264,27 +251,36 @@
             const showExpenseModal = ref(false);
             const showBusModal = ref(false);
             const currentBusSchedule = ref([]);
+            const currentBusRoute = ref('');
 
             const days = [
                 { date: '2026-02-03', weekday: 'Tue', dayNum: '3', location: '東京/山形', intro: '藏王溫泉（Zao Onsen）以強酸性硫磺泉聞名，冬季的「樹冰」奇景更是世界級景觀，被稱為「雪怪」。' },
                 { date: '2026-02-04', weekday: 'Wed', dayNum: '4', location: '藏王溫泉', intro: '搭乘藏王纜車可俯瞰壯觀的樹冰原。這裡也是滑雪勝地，擁有單板雙板都適合的廣闊雪道。' },
-                { date: '2026-02-05', weekday: 'Thu', dayNum: '5', location: '山形/仙台', intro: '仙台（Sendai）是東北最大城市，必吃厚切牛舌。' },
+                { date: '2026-02-05', weekday: 'Thu', dayNum: '5', location: '山形/仙台', intro: '仙台是東北購物天堂！從車站連接的 S-PAL、Parco，到著名的 Clis Road 商店街，藥妝、服飾、雜貨應有盡有。午餐必吃善治郎牛舌。' },
                 { date: '2026-02-06', weekday: 'Fri', dayNum: '6', location: '銀山溫泉', intro: '銀山溫泉（Ginzan Onsen）保留了大正浪漫時期的木造建築，夜晚煤氣燈亮起時，彷彿進入《神隱少女》的世界。' },
                 { date: '2026-02-07', weekday: 'Sat', dayNum: '7', location: '奧入瀨', intro: '奧入瀨溪流（Oirase Gorge）冬季會形成壯觀的冰瀑，星野度假村提供專屬的冰瀑夜遊活動。' },
-                { date: '2026-02-08', weekday: 'Sun', dayNum: '8', location: '青森屋', intro: '青森是日本本州最北端的縣，壯麗的自然風光如世界遺產白神山地、十和田湖、奧入瀨溪流、熱鬧的傳統青森睡魔祭和美味的特產蘋果、海鮮、日本酒而聞名，四季分明，擁有獨特的魅力。 ' },
+                { date: '2026-02-08', weekday: 'Sun', dayNum: '8', location: '青森屋', intro: '日本本州最北端的縣，壯麗的自然風光如世界遺產白神山地、十和田湖、奧入瀨溪流、熱鬧的傳統青森睡魔祭和美味的特產蘋果、海鮮、日本酒而聞名，四季分明，擁有獨特的魅力。 ' },
                 { date: '2026-02-09', weekday: 'Mon', dayNum: '9', location: '青森屋', intro: '星野青森屋可以完整體驗青森文化，包含著名的「睡魔祭」燈籠裝飾與露天風呂「浮湯」。' },
                 { date: '2026-02-10', weekday: 'Tue', dayNum: '10', location: '青森/返台', intro: '旅程終點，可以在青森市區購買蘋果派、蘋果汁等伴手禮。' },
             ];
 
             const locationGlossary = ref([
                 { name: '山形', romaji: 'Yamagata' }, { name: '藏王', romaji: 'Zao' }, { name: '仙台', romaji: 'Sendai' },
+                { name: '山寺', romaji: 'Yamadera' },
                 { name: '銀山溫泉', romaji: 'Ginzan Onsen' }, { name: '大石田', romaji: 'Oishida' }, { name: '奧入瀨', romaji: 'Oirase' },
                 { name: '青森', romaji: 'Aomori' }, { name: '八戶', romaji: 'Hachinohe' }, { name: '三澤', romaji: 'Misawa' },
                 { name: '羽田', romaji: 'Haneda' }, { name: '東京', romaji: 'Tokyo' }
             ]);
 
             const busTimetables = {
-                'zao_bus': [ { dep: '12:20', arr: '12:57' }, { dep: '13:20', arr: '13:57' }, { dep: '14:20', arr: '14:57' }, { dep: '15:20', arr: '15:57' }, { dep: '16:20', arr: '16:57' }, { dep: '17:40', arr: '18:17' } ]
+                'zao_bus': {
+                    route: '山形駅前 - 藏王溫泉',
+                    schedule: [ { dep: '12:20', arr: '12:57' }, { dep: '13:20', arr: '13:57' }, { dep: '14:20', arr: '14:57' }, { dep: '15:20', arr: '15:57' }, { dep: '16:20', arr: '16:57' }, { dep: '17:40', arr: '18:17' } ]
+                },
+                'yamagata_return_bus': {
+                    route: '藏王溫泉 - 山形駅前',
+                    schedule: [ { dep: '08:40', arr: '09:15' }, { dep: '09:40', arr: '10:15' }, { dep: '10:40', arr: '11:15' }, { dep: '11:40', arr: '12:15' }, { dep: '12:40', arr: '13:15' } ]
+                }
             };
 
             const defaultItinerary = [
@@ -296,15 +292,21 @@
                 { id: 105, date: '2026-02-03', name: '山形車站午餐', category: '美食', startTime: '11:40', hours: '', ticket: '', note: '米澤牛便當?', transportType: 'walk', travelTime: '0分' },
                 { id: 106, date: '2026-02-03', name: '巴士往藏王溫泉', category: '交通', startTime: '13:20', hours: '', ticket: '1200円', note: '東口巴士總站第一月台', transportType: 'transit', travelTime: '40分', timetableId: 'zao_bus' },
                 { id: 107, date: '2026-02-03', name: '高見屋 瑠璃俱樂度假區', category: '住宿', startTime: '15:00', hours: 'Check-in', ticket: '', note: '藏王溫泉 Check-in', transportType: 'walk', travelTime: '10分' },
+                
                 // Day 2: 2/4
                 { id: 201, date: '2026-02-04', name: '藏王樹冰 (Zao Ropeway)', category: '景點', startTime: '09:00', hours: '08:30-17:00', ticket: '3500円', note: '山頂線看樹冰', transportType: 'walk', travelTime: '15分' },
-                { id: 202, date: '2026-02-04', name: '藏王溫泉街散策', category: '景點', startTime: '14:00', hours: '', ticket: '', note: '公共浴場/溫泉街', transportType: 'walk', travelTime: '5分' },
-                // Day 3: 2/5
-                { id: 301, date: '2026-02-05', name: '返回山形車站', category: '交通', startTime: '10:00', hours: '', ticket: '', note: '巴士', transportType: 'transit', travelTime: '40分' },
-                { id: 302, date: '2026-02-05', name: '前往仙台', category: '交通', startTime: '11:30', hours: '', ticket: '', note: 'JR仙山線/巴士', transportType: 'transit', travelTime: '1hr' },
-                { id: 303, date: '2026-02-05', name: '仙台市區逛街', category: '購物', startTime: '14:00', hours: '', ticket: '', note: '商店街/牛舌', transportType: 'walk', travelTime: '5分' },
-                { id: 304, date: '2026-02-05', name: '寄送行李', category: '其他', startTime: '18:00', hours: '', ticket: '', note: '寄到星野奧入瀨', transportType: 'walk', travelTime: '' },
-                { id: 305, date: '2026-02-05', name: 'Richmond Hotel Premier', category: '住宿', startTime: '19:00', hours: '', ticket: '', note: '仙台站前', transportType: 'walk', travelTime: '5分' },
+                { id: 202, date: '2026-02-04', name: '溫泉街咖啡 & 散策', category: '美食', startTime: '13:00', hours: '', ticket: '', note: '山口餅屋 (麻糬) / 音茶屋', transportType: 'walk', travelTime: '5分' },
+                { id: 203, date: '2026-02-04', name: '藏王大露天風呂', category: '景點', startTime: '15:00', hours: '', ticket: '600円', note: '體驗雪中溫泉 (視開放狀況)', transportType: 'walk', travelTime: '15分' },
+                
+                // Day 3: 2/5 (Shopping Focused)
+                { id: 301, date: '2026-02-05', name: '巴士返回山形車站', category: '交通', startTime: '08:40', hours: '', ticket: '1200円', note: '藏王巴士總站', transportType: 'walk', travelTime: '10分', timetableId: 'yamagata_return_bus' },
+                { id: 302, date: '2026-02-05', name: 'JR 往仙台', category: '交通', startTime: '09:30', hours: '', ticket: '', note: '山形 - 仙台 (Sendai) 快速', transportType: 'transit', travelTime: '1hr 15m' },
+                { id: 303, date: '2026-02-05', name: 'Richmond Hotel (寄行李)', category: '住宿', startTime: '11:00', hours: '', ticket: '', note: '先至飯店寄放行李', transportType: 'walk', travelTime: '8分' },
+                { id: 304, date: '2026-02-05', name: '善治郎牛舌 (Zanjiro)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台名物！站前本店', transportType: 'walk', travelTime: '5分' },
+                { id: 305, date: '2026-02-05', name: '仙台車站大爆買', category: '購物', startTime: '13:00', hours: 'S-PAL / Parco', ticket: '', note: '伴手禮、服飾、雜貨', transportType: 'walk', travelTime: '0分' },
+                { id: 306, date: '2026-02-05', name: 'Clis Road 商店街', category: '購物', startTime: '16:00', hours: '', ticket: '', note: '藥妝店激戰區', transportType: 'walk', travelTime: '10分' },
+                { id: 307, date: '2026-02-05', name: '回飯店整理 & 寄行李', category: '其他', startTime: '20:00', hours: '', ticket: '', note: '黑貓宅急便寄往星野奧入瀨', transportType: 'walk', travelTime: '10分' },
+
                 // Day 4: 2/6
                 { id: 401, date: '2026-02-06', name: '仙台 - 山形 - 大石田', category: '交通', startTime: '10:00', hours: '', ticket: '', note: '轉乘往銀山', transportType: 'transit', travelTime: '1.5hr' },
                 { id: 402, date: '2026-02-06', name: '大石田 - 銀山溫泉', category: '交通', startTime: '13:00', hours: '', ticket: '', note: '接駁巴士', transportType: 'transit', travelTime: '40分' },
@@ -348,20 +350,17 @@
                 { name: '星野青森屋', phone: '+81 50-3134-8094', address: '青森縣三澤市古間木山56', date: '2/8-2/9' },
             ];
 
-            // Setup Data with Version Check
+            // Setup Data with Version Check (Silent Update)
             const itineraryItems = ref([]);
             const shoppingList = ref(JSON.parse(localStorage.getItem('trip_shopping')) || []);
             const expenses = ref(JSON.parse(localStorage.getItem('trip_expenses')) || []);
 
-            // Check version to force update
             const storedVersion = localStorage.getItem('data_version');
             if (storedVersion !== DATA_VERSION) {
-                // Version Mismatch: Force overwrite itinerary to fix arrows/bus
-                console.log('Detected old data, upgrading to ' + DATA_VERSION);
+                console.log('Silent update to ' + DATA_VERSION);
                 itineraryItems.value = defaultItinerary;
                 localStorage.setItem('trip_itinerary', JSON.stringify(defaultItinerary));
                 localStorage.setItem('data_version', DATA_VERSION);
-                alert('行程表已自動更新為最新官方版本！'); // Notify user
             } else {
                 itineraryItems.value = JSON.parse(localStorage.getItem('trip_itinerary')) || defaultItinerary;
             }
@@ -407,7 +406,13 @@
             const saveExpense = () => { if(!expenseForm.value.amount) return; expenses.value.push({ ...expenseForm.value, date: expenseForm.value.date || new Date().toISOString().split('T')[0] }); showExpenseModal.value = false; expenseForm.value = { category: '飲食', name: '', amount: '', date: '', payment: '現金' }; };
             const removeExpense = (idx) => confirm('刪除？') && expenses.value.splice(idx, 1);
 
-            const openBusModal = (timetableId) => { if (busTimetables[timetableId]) { currentBusSchedule.value = busTimetables[timetableId]; showBusModal.value = true; } else { alert('找不到對應的時刻表'); } };
+            const openBusModal = (timetableId) => { 
+                if (busTimetables[timetableId]) { 
+                    currentBusSchedule.value = busTimetables[timetableId].schedule; 
+                    currentBusRoute.value = busTimetables[timetableId].route;
+                    showBusModal.value = true; 
+                } 
+            };
 
             onMounted(() => expenseForm.value.date = new Date().toISOString().split('T')[0]);
 
@@ -415,7 +420,7 @@
                 currentTab, days, selectedDayIndex, currentWeather,
                 currentDayItems, flights, hotels, shoppingList, expenses, totalExpense, sortedExpenses,
                 rate, calcJpy, showModal, isEditing, form, showShopModal, shopForm, showExpenseModal, expenseForm,
-                showBusModal, currentBusSchedule, locationGlossary,
+                showBusModal, currentBusSchedule, currentBusRoute, locationGlossary,
                 tabClass, getCategoryColor, transportIcon, getExpenseIcon,
                 openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
                 handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal
@@ -425,4 +430,3 @@
 </script>
 </body>
 </html>
-
