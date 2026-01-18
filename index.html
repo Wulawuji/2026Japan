@@ -23,9 +23,9 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Banner 遮罩調整，讓下方過渡更自然 */
+        /* Banner 遮罩調整 */
         .banner-mask {
-            border-radius: 0 0 0 0; /* 取消圓角，讓畫面延伸 */
+            border-radius: 0 0 0 0;
             box-shadow: 0 4px 20px -5px rgba(0,0,0,0.1);
         }
 
@@ -42,14 +42,18 @@
 </head>
 <body>
 
-<div id="app" class="pb-32 min-h-screen relative"> <header class="relative w-full h-[280px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
+<div id="app" class="pb-32 min-h-screen relative">
+
+    <header class="relative w-full h-[280px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('Banner5.jpg');"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/40"></div>
         
-        <div class="absolute top-10 right-6 text-white drop-shadow-md text-right">
-            <h1 class="text-3xl font-bold font-literary tracking-[0.2em] opacity-95 text-shadow-sm">雪怪暖燈二重奏</h1>
-            <div class="mt-3 flex justify-end">
-                <span class="text-xs font-light tracking-[0.15em] opacity-90 border-t border-white/60 pt-1.5 font-literary">
+        <div class="absolute top-6 right-6 text-white drop-shadow-md text-right">
+            <h1 class="text-3xl font-bold font-literary tracking-[0.15em] opacity-95 text-shadow-sm leading-snug">
+                雪怪暖燈<br>二重奏
+            </h1>
+            <div class="mt-2 flex justify-end">
+                <span class="text-[10px] font-light tracking-[0.15em] opacity-80 border-t border-white/60 pt-1 font-literary block">
                     2026.02.03 - 02.10
                 </span>
             </div>
@@ -264,7 +268,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v14.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v15.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -297,6 +301,7 @@
 
             const locationGlossary = ref([
                 { name: '山形', romaji: 'Yamagata' }, { name: '藏王', romaji: 'Zao' }, { name: '仙台', romaji: 'Sendai' },
+                { name: '山寺', romaji: 'Yamadera' },
                 { name: '銀山溫泉', romaji: 'Ginzan Onsen' }, { name: '大石田', romaji: 'Oishida' }, { name: '奧入瀨', romaji: 'Oirase' },
                 { name: '青森', romaji: 'Aomori' }, { name: '八戶', romaji: 'Hachinohe' }, { name: '三澤', romaji: 'Misawa' },
                 { name: '羽田', romaji: 'Haneda' }, { name: '東京', romaji: 'Tokyo' }
@@ -361,7 +366,7 @@
                 { id: 408, date: '2026-02-06', name: '銀山溫泉夜景', category: '景點', startTime: '17:00', hours: '', ticket: '', note: 'Blue Hour 最佳拍攝時間', transportType: 'walk', travelTime: '0分' },
                 
                 // Day 5: 2/7 (Precise Times)
-                { id: 501, date: '2026-02-07', name: '銀山 - 大石田', category: '交通', startTime: '08:25', hours: '08:25-09:01', ticket: '', note: '接駁車', transportType: 'transit', travelTime: '40分' },
+                { id: 501, date: '2026-02-07', name: '銀山 - 大石田', category: '交通', startTime: '08:25', hours: '08:25-09:01', ticket: '', note: '銀山巴士', transportType: 'transit', travelTime: '40分' },
                 { id: 502, date: '2026-02-07', name: 'Tsubasa 136 往山形', category: '交通', startTime: '09:31', hours: '09:31-10:04', ticket: '已預約', note: '大石田 - 山形 (已用周遊券預約)', transportType: 'transit', travelTime: '30分' },
                 { id: 503, date: '2026-02-07', name: '山形 - 仙台', category: '交通', startTime: '10:12', hours: '10:12-11:35', ticket: '', note: 'JR 仙山線快速', transportType: 'transit', travelTime: '1.2hr' },
                 { id: 504, date: '2026-02-07', name: '仙台 - 八戶', category: '交通', startTime: '11:55', hours: '11:55-13:04', ticket: '已預約', note: 'Hayabusa 15 (已用周遊券預約)', transportType: 'transit', travelTime: '1hr' },
