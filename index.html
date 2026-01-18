@@ -8,7 +8,6 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 引入文青風襯線體 (Shippori Mincho) 與原本的圓體 */
         @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
         
         body {
@@ -17,25 +16,22 @@
             color: #475569;
             -webkit-tap-highlight-color: transparent;
             letter-spacing: 0.05em;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
-        /* 標題專用字體 */
-        .font-literary {
-            font-family: 'Shippori Mincho', 'Noto Serif TC', serif;
-        }
-
+        .font-literary { font-family: 'Shippori Mincho', 'Noto Serif TC', serif; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Banner 遮罩調整，讓下方過渡更自然 */
         .banner-mask {
-            border-radius: 0 0 40px 40px;
-            box-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.5);
+            border-radius: 0 0 0 0; /* 取消圓角，讓畫面延伸 */
+            box-shadow: 0 4px 20px -5px rgba(0,0,0,0.1);
         }
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
         .fade-enter-from, .fade-leave-to { opacity: 0; }
-        @keyframes bounce-sm {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
+        @keyframes bounce-sm { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
         .animate-bounce-sm { animation: bounce-sm 2s infinite; }
     </style>
     <script>
@@ -46,11 +42,9 @@
 </head>
 <body>
 
-<div id="app" class="pb-24 min-h-screen relative">
-
-    <header class="relative w-full h-[250px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
+<div id="app" class="pb-32 min-h-screen relative"> <header class="relative w-full h-[280px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('Banner5.jpg');"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/40"></div>
         
         <div class="absolute top-10 right-6 text-white drop-shadow-md text-right">
             <h1 class="text-3xl font-bold font-literary tracking-[0.2em] opacity-95 text-shadow-sm">雪怪暖燈二重奏</h1>
@@ -60,16 +54,9 @@
                 </span>
             </div>
         </div>
-
-        <div class="absolute bottom-4 right-4 flex gap-3 z-30">
-            <button @click="currentTab = 'schedule'" :class="tabClass('schedule')" class="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110 backdrop-blur-md"><i class="fa-solid fa-map-location-dot text-lg"></i></button>
-            <button @click="currentTab = 'info'" :class="tabClass('info')" class="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-105 backdrop-blur-md"><i class="fa-solid fa-circle-info text-lg"></i></button>
-            <button @click="currentTab = 'shopping'" :class="tabClass('shopping')" class="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-105 backdrop-blur-md"><i class="fa-solid fa-basket-shopping text-lg"></i></button>
-            <button @click="currentTab = 'expenses'" :class="tabClass('expenses')" class="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-105 backdrop-blur-md"><i class="fa-solid fa-yen-sign text-lg"></i></button>
-        </div>
     </header>
 
-    <main class="-mt-6 px-4 relative z-10">
+    <main class="-mt-4 px-4 relative z-10">
 
         <div v-if="currentTab === 'schedule'" class="space-y-4 fade-in">
             
@@ -142,11 +129,10 @@
                 </div>
             </div>
             
-            <button @click="openAddModal" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
+            <button @click="openAddModal" class="fixed bottom-24 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
         <div v-if="currentTab === 'info'" class="space-y-6 pt-4 pb-20 fade-in">
-            
             <div class="bg-red-50 p-5 rounded-3xl border border-red-100 shadow-sm">
                 <h3 class="font-bold text-red-500 mb-3 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 緊急聯絡 (日本)</h3>
                 <div class="flex justify-around text-center gap-4">
@@ -158,7 +144,6 @@
                     </a>
                 </div>
             </div>
-
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-calculator mr-2 text-ice-blue"></i> 匯率小幫手</h3>
                 <div class="flex gap-2 items-center">
@@ -167,7 +152,6 @@
                     <div class="flex-1"><label class="text-xs text-gray-400 font-bold ml-1">台幣 (TWD)</label><div class="w-full bg-blue-50 p-3 rounded-2xl border border-blue-100 text-lg font-bold text-deep-blue">${{ (calcJpy * rate).toFixed(0) }}</div></div>
                 </div>
             </div>
-
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-plane mr-2 text-ice-blue"></i> 航班資訊</h3>
                 <div class="space-y-4">
@@ -177,18 +161,15 @@
                     </div>
                 </div>
             </div>
-
             <a href="https://www.navitime.co.jp/zh-tw/transfer/" target="_blank" class="block bg-green-500 text-white p-4 rounded-2xl shadow-md flex items-center justify-between active:scale-95 transition">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-train text-xl"></i><span class="font-bold tracking-wide">乘換案內 (NAVITIME)</span></div><i class="fa-solid fa-chevron-right opacity-50"></i>
             </a>
-
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-language mr-2 text-ice-blue"></i> 日本地名對照</h3>
                 <div class="grid grid-cols-2 gap-3">
                     <div v-for="place in locationGlossary" class="bg-gray-50 p-2 rounded-xl flex flex-col items-center justify-center text-center"><div class="font-bold text-gray-700">{{ place.name }}</div><div class="text-xs text-gray-400 font-mono mt-0.5">{{ place.romaji }}</div></div>
                 </div>
             </div>
-
             <div class="space-y-3">
                 <h3 class="font-bold text-gray-500 pl-2 text-sm">住宿資訊</h3>
                 <div v-for="hotel in hotels" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
@@ -196,7 +177,6 @@
                     <div class="font-bold text-gray-800 mt-2 text-lg">{{ hotel.name }}</div><div class="text-xs text-gray-500 mt-1 font-medium">{{ hotel.address }}</div><div class="text-xs text-gray-400 mt-2 font-medium flex items-center"><i class="fa-solid fa-phone mr-2 text-ice-blue"></i> {{ hotel.phone }}</div>
                 </div>
             </div>
-
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-yellow-200 bg-yellow-50/30">
                 <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-file-shield mr-2 text-yellow-500"></i> 旅遊保險資訊</h3>
                 <textarea v-model="insuranceInfo" placeholder="請在此輸入保險公司、保單號碼、海外緊急救援電話..." class="w-full p-3 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 h-24 focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400 outline-none"></textarea>
@@ -213,7 +193,7 @@
                 </div>
             </div>
             <div v-if="shoppingList.length === 0" class="text-center text-gray-300 mt-20"><i class="fa-solid fa-basket-shopping text-5xl mb-3 opacity-30"></i><p class="font-bold">購物清單是空的</p><p class="text-xs mt-1">按右下角 + 開始新增</p></div>
-            <button @click="showShopModal = true" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
+            <button @click="showShopModal = true" class="fixed bottom-24 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
         <div v-if="currentTab === 'expenses'" class="pb-20 fade-in pt-4 space-y-4">
@@ -227,10 +207,25 @@
                     <div class="text-right"><div class="font-bold text-gray-800">¥{{ parseInt(exp.amount).toLocaleString() }}</div><button @click="removeExpense(idx)" class="text-xs text-red-300 hover:text-red-500 mt-1 font-bold">刪除</button></div>
                 </div>
             </div>
-            <button @click="showExpenseModal = true" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
+            <button @click="showExpenseModal = true" class="fixed bottom-24 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
     </main>
+
+    <nav class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-safe z-50 flex justify-around items-center py-2">
+        <button @click="currentTab = 'schedule'" :class="navBtnClass('schedule')" class="flex flex-col items-center justify-center w-16 h-14 transition-all active:scale-95">
+            <i class="fa-solid fa-map-location-dot text-xl mb-1"></i><span class="text-[10px] font-bold">行程</span>
+        </button>
+        <button @click="currentTab = 'info'" :class="navBtnClass('info')" class="flex flex-col items-center justify-center w-16 h-14 transition-all active:scale-95">
+            <i class="fa-solid fa-circle-info text-xl mb-1"></i><span class="text-[10px] font-bold">資訊</span>
+        </button>
+        <button @click="currentTab = 'shopping'" :class="navBtnClass('shopping')" class="flex flex-col items-center justify-center w-16 h-14 transition-all active:scale-95">
+            <i class="fa-solid fa-basket-shopping text-xl mb-1"></i><span class="text-[10px] font-bold">購物</span>
+        </button>
+        <button @click="currentTab = 'expenses'" :class="navBtnClass('expenses')" class="flex flex-col items-center justify-center w-16 h-14 transition-all active:scale-95">
+            <i class="fa-solid fa-yen-sign text-xl mb-1"></i><span class="text-[10px] font-bold">記帳</span>
+        </button>
+    </nav>
 
     <div v-if="showModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="closeModal">
         <div class="bg-white w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-slide-up">
@@ -269,7 +264,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v13.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v14.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -302,7 +297,6 @@
 
             const locationGlossary = ref([
                 { name: '山形', romaji: 'Yamagata' }, { name: '藏王', romaji: 'Zao' }, { name: '仙台', romaji: 'Sendai' },
-                { name: '山寺', romaji: 'Yamadera' },
                 { name: '銀山溫泉', romaji: 'Ginzan Onsen' }, { name: '大石田', romaji: 'Oishida' }, { name: '奧入瀨', romaji: 'Oirase' },
                 { name: '青森', romaji: 'Aomori' }, { name: '八戶', romaji: 'Hachinohe' }, { name: '三澤', romaji: 'Misawa' },
                 { name: '羽田', romaji: 'Haneda' }, { name: '東京', romaji: 'Tokyo' }
@@ -336,7 +330,7 @@
                 { id: 101, date: '2026-02-03', name: 'IT216 桃園 - 羽田', category: '航班', startTime: '00:10', hours: '00:10-04:00', ticket: '', note: '第三航廈', transportType: '', travelTime: '' },
                 { id: 102, date: '2026-02-03', name: '羽田機場換 JR PASS', category: '其他', startTime: '06:00', hours: '', ticket: '', note: '第二航廈旅行服務中心', transportType: 'walk', travelTime: '機場內' },
                 { id: 103, date: '2026-02-03', name: '移動至東京車站', category: '交通', startTime: '07:00', hours: '', ticket: 'JR PASS', note: '單軌電車至濱松町轉山手線', transportType: 'transit', travelTime: '40分' },
-                { id: 104, date: '2026-02-03', name: 'Tsubasa 129 新幹線', category: '交通', startTime: '08:56', hours: '08:56-11:38', ticket: 'JR PASS', note: '東京 - 山形 (Yamagata)', transportType: 'transit', travelTime: '2.5hr' },
+                { id: 104, date: '2026-02-03', name: '東京 - 山形', category: '交通', startTime: '08:56', hours: '08:56-11:38', ticket: 'JR PASS', note: 'Tsubasa 129 新幹線', transportType: 'transit', travelTime: '2.5hr' },
                 { id: 105, date: '2026-02-03', name: '山形車站午餐', category: '美食', startTime: '11:40', hours: '', ticket: '', note: '米澤牛便當?', transportType: 'walk', travelTime: '0分' },
                 { id: 106, date: '2026-02-03', name: '巴士往藏王溫泉', category: '交通', startTime: '13:20', hours: '', ticket: '1200円', note: '東口巴士總站第一月台', transportType: 'transit', travelTime: '40分', timetableId: 'zao_bus' },
                 { id: 107, date: '2026-02-03', name: '高見屋 瑠璃俱樂度假區', category: '住宿', startTime: '15:00', hours: 'Check-in', ticket: '', note: '藏王溫泉 Check-in', transportType: 'walk', travelTime: '10分' },
@@ -347,8 +341,8 @@
                 { id: 203, date: '2026-02-04', name: '藏王大露天風呂', category: '景點', startTime: '15:00', hours: '', ticket: '600円', note: '體驗雪中溫泉 (視開放狀況)', transportType: 'walk', travelTime: '15分' },
                 
                 // Day 3: 2/5 (Shopping Focused)
-                { id: 301, date: '2026-02-05', name: '巴士返回山形車站', category: '交通', startTime: '08:40', hours: '', ticket: '1200円', note: '藏王巴士總站', transportType: 'walk', travelTime: '10分', timetableId: 'yamagata_return_bus' },
-                { id: 302, date: '2026-02-05', name: '移動：山形 - 仙台', category: '交通', startTime: '09:30', hours: '', ticket: '', note: '自由選擇 JR 或 巴士', transportType: 'transit', travelTime: '1hr 15m', timetableId: 'sendai_jr_rapid', timetableLabel: 'JR 時刻', timetableId2: 'sendai_bus_express', timetableLabel2: '巴士時刻' },
+                { id: 301, date: '2026-02-05', name: '藏王溫泉 - 山形', category: '交通', startTime: '08:40', hours: '', ticket: '1200円', note: '藏王巴士總站', transportType: 'walk', travelTime: '10分', timetableId: 'yamagata_return_bus' },
+                { id: 302, date: '2026-02-05', name: '山形 - 仙台', category: '交通', startTime: '09:30', hours: '', ticket: '', note: '自由選擇 JR 或 巴士', transportType: 'transit', travelTime: '1hr 15m', timetableId: 'sendai_jr_rapid', timetableLabel: 'JR 時刻', timetableId2: 'sendai_bus_express', timetableLabel2: '巴士時刻' },
                 { id: 303, date: '2026-02-05', name: 'Richmond Hotel (寄行李)', category: '住宿', startTime: '11:00', hours: '', ticket: '', note: '先至飯店寄放行李', transportType: 'walk', travelTime: '8分' },
                 { id: 304, date: '2026-02-05', name: '善治郎牛舌 (Zanjiro)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台名物！站前本店', transportType: 'walk', travelTime: '5分' },
                 { id: 305, date: '2026-02-05', name: '仙台車站大爆買', category: '購物', startTime: '13:00', hours: 'S-PAL / Parco', ticket: '', note: '伴手禮、服飾、雜貨', transportType: 'walk', travelTime: '0分' },
@@ -359,9 +353,9 @@
                 // Day 4: 2/6 (Updated)
                 { id: 401, date: '2026-02-06', name: '仙台早晨 (朝市/補貨)', category: '購物', startTime: '09:00', hours: '', ticket: '', note: '仙台朝市或車站周邊', transportType: 'walk', travelTime: '' },
                 { id: 402, date: '2026-02-06', name: '仙台午餐 (壽司通)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台車站 3F', transportType: 'walk', travelTime: '0分' },
-                { id: 403, date: '2026-02-06', name: '移動：仙台 - 山形', category: '交通', startTime: '12:50', hours: '12:50-14:12', ticket: '', note: 'JR 仙山線快速 (仙台發)', transportType: 'transit', travelTime: '1hr 22m' },
+                { id: 403, date: '2026-02-06', name: '仙台 - 山形', category: '交通', startTime: '12:50', hours: '12:50-14:12', ticket: '', note: 'JR 仙山線快速 (仙台發)', transportType: 'transit', travelTime: '1hr 22m' },
                 { id: 404, date: '2026-02-06', name: '山形車站休息', category: '其他', startTime: '14:12', hours: '停留 30分', ticket: '', note: '購買補給品、休息', transportType: 'walk', travelTime: '0分' },
-                { id: 405, date: '2026-02-06', name: '移動：山形 - 大石田', category: '交通', startTime: '14:44', hours: '14:44-15:15', ticket: '', note: 'Tsubasa 137 (山形發)', transportType: 'transit', travelTime: '31分' },
+                { id: 405, date: '2026-02-06', name: '山形 - 大石田', category: '交通', startTime: '14:44', hours: '14:44-15:15', ticket: '已預約', note: 'Tsubasa 137 (已用周遊券預約)', transportType: 'transit', travelTime: '31分' },
                 { id: 406, date: '2026-02-06', name: '接駁巴士往銀山', category: '交通', startTime: '15:40', hours: '', ticket: '預約制', note: '御宿 やなだ屋 接駁車', transportType: 'transit', travelTime: '40分' },
                 { id: 407, date: '2026-02-06', name: '御宿 やなだ屋', category: '住宿', startTime: '16:20', hours: '', ticket: '', note: 'Check-in', transportType: 'walk', travelTime: '0分' },
                 { id: 408, date: '2026-02-06', name: '銀山溫泉夜景', category: '景點', startTime: '17:00', hours: '', ticket: '', note: 'Blue Hour 最佳拍攝時間', transportType: 'walk', travelTime: '0分' },
@@ -446,7 +440,8 @@
             const getCategoryColor = (cat) => ({ '景點': 'bg-green-400', '住宿': 'bg-purple-400', '美食': 'bg-orange-400', '購物': 'bg-pink-400', '交通': 'bg-blue-400', '航班': 'bg-blue-600', '其他': 'bg-gray-400' }[cat] || 'bg-gray-400');
             const transportIcon = (type) => ({ 'walk': 'fa-solid fa-person-walking', 'car': 'fa-solid fa-car', 'transit': 'fa-solid fa-train-subway' }[type] || 'fa-solid fa-shoe-prints');
             const getExpenseIcon = (cat) => `fa-solid ` + ({ '飲食': 'fa-utensils', '交通': 'fa-train', '住宿': 'fa-bed', '門票': 'fa-ticket', '購物': 'fa-bag-shopping', '其他': 'fa-circle-question' }[cat] || 'fa-circle');
-            
+            const navBtnClass = (tab) => currentTab.value === tab ? 'text-deep-blue' : 'text-gray-400';
+
             const openMap = (keyword) => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(keyword)}`, '_blank');
             const openAddModal = () => { isEditing.value = false; form.value = { date: days[selectedDayIndex.value].date, category: '景點', name: '', startTime: '', hours: '', ticket: '', note: '', transportType: 'walk', travelTime: '15分', timetableId: '' }; showModal.value = true; };
             const editItem = (item) => { isEditing.value = true; editingId.value = item.id; form.value = JSON.parse(JSON.stringify(item)); showModal.value = true; };
@@ -477,7 +472,7 @@
                 currentDayItems, flights, hotels, shoppingList, expenses, totalExpense, sortedExpenses,
                 rate, calcJpy, showModal, isEditing, form, showShopModal, shopForm, showExpenseModal, expenseForm,
                 showBusModal, currentBusSchedule, currentBusRoute, locationGlossary, insuranceInfo,
-                tabClass, getCategoryColor, transportIcon, getExpenseIcon,
+                tabClass, getCategoryColor, transportIcon, getExpenseIcon, navBtnClass,
                 openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
                 handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal
             };
