@@ -63,7 +63,7 @@
         <div class="absolute inset-0 bg-cover bg-left" style="background-image: url('Banner5.jpg');"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/30"></div>
         
-        <div class="absolute top-8 right-6 text-white drop-shadow-md text-right z-30">
+        <div class="absolute top-5 right-6 text-white drop-shadow-md text-right z-30">
             <h1 class="text-3xl font-bold tracking-widest opacity-95 text-shadow-sm leading-snug">
                 雪怪暖燈<br>二重奏
             </h1>
@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div class="absolute bottom-6 right-6 grid grid-cols-2 gap-3 z-30">
+        <div class="absolute bottom-6 right-6 flex gap-3 z-30">
             <button @click="currentTab = 'schedule'" :class="['glass-btn rounded-2xl w-14 h-14 flex items-center justify-center transition-all duration-300', currentTab === 'schedule' ? 'active' : '']">
                 <i class="fa-solid fa-map-location-dot text-xl"></i>
             </button>
@@ -93,58 +93,34 @@
     <main class="-mt-6 px-4 relative z-10">
 
         <div v-if="currentTab === 'schedule'" class="space-y-4 fade-in">
-            
             <div class="flex overflow-x-auto gap-3 pb-2 scrollbar-hide pt-2">
                 <button v-for="(day, index) in days" :key="day.date" @click="selectedDayIndex = index" :class="selectedDayIndex === index ? 'bg-deep-blue text-white shadow-blue-200' : 'bg-white text-gray-400'" class="flex-shrink-0 flex flex-col items-center justify-center w-16 h-20 rounded-2xl shadow-sm transition-all border border-gray-100">
                     <span class="text-xs font-bold">{{ day.weekday }}</span><span class="text-2xl font-bold mt-1">{{ day.dayNum }}</span>
                 </button>
             </div>
-
             <div class="bg-gradient-to-r from-blue-50 to-white p-4 rounded-3xl shadow-sm border border-blue-100 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <i :class="currentWeather.icon" class="text-3xl text-ice-blue animate-bounce-sm"></i>
-                    <div><div class="text-xs text-gray-400 font-bold">Weather</div><div class="font-bold text-gray-700 text-lg">{{ currentWeather.temp }}°C <span class="text-xs font-medium text-gray-400">(體感 {{ currentWeather.feel }}°C)</span></div></div>
-                </div>
+                <div class="flex items-center gap-3"><i :class="currentWeather.icon" class="text-3xl text-ice-blue animate-bounce-sm"></i><div><div class="text-xs text-gray-400 font-bold">Weather</div><div class="font-bold text-gray-700 text-lg">{{ currentWeather.temp }}°C <span class="text-xs font-medium text-gray-400">(體感 {{ currentWeather.feel }}°C)</span></div></div></div>
                 <div class="text-right"><div class="text-xs text-blue-400 font-bold px-3 py-1 bg-white rounded-full shadow-sm">{{ days[selectedDayIndex].location }}</div></div>
             </div>
-
             <div class="space-y-0 relative">
                 <div class="absolute left-6 top-4 bottom-0 w-0.5 bg-gray-200 z-0 rounded-full"></div>
-
                 <div v-for="(item, index) in currentDayItems" :key="item.id" class="relative z-10 mb-6 group">
-                    <div v-if="index > 0 || (index === 0 && item.travelTime)" class="pl-12 py-2 flex items-center gap-2 text-xs text-gray-400 font-medium">
-                        <i :class="transportIcon(item.transportType)"></i><span>{{ item.travelTime }}</span>
-                    </div>
+                    <div v-if="index > 0 || (index === 0 && item.travelTime)" class="pl-12 py-2 flex items-center gap-2 text-xs text-gray-400 font-medium"><i :class="transportIcon(item.transportType)"></i><span>{{ item.travelTime }}</span></div>
                     <div v-else-if="index === 0 && !item.travelTime" class="pl-12 py-2 text-xs text-gray-400 font-medium">從住宿出發</div>
-
                     <div class="flex gap-4 items-start">
-                        <div class="w-12 flex-shrink-0 flex flex-col items-center pt-1 bg-F0F4F8">
-                            <div :class="getCategoryColor(item.category)" class="w-4 h-4 rounded-full border-4 border-[#F0F4F8] shadow-sm"></div>
-                            <div class="text-[10px] font-bold text-gray-400 mt-1">{{ item.startTime }}</div>
-                        </div>
-
+                        <div class="w-12 flex-shrink-0 flex flex-col items-center pt-1 bg-F0F4F8"><div :class="getCategoryColor(item.category)" class="w-4 h-4 rounded-full border-4 border-[#F0F4F8] shadow-sm"></div><div class="text-[10px] font-bold text-gray-400 mt-1">{{ item.startTime }}</div></div>
                         <div @click="openMap(item.name)" class="flex-grow bg-white rounded-2xl p-4 shadow-sm border border-gray-100 active:scale-95 transition-transform cursor-pointer relative overflow-hidden">
                             <div class="absolute top-0 right-0 px-3 py-1.5 bg-gray-50 text-[10px] font-bold text-gray-400 rounded-bl-2xl">{{ item.category }}</div>
-                            
-                            <div v-if="item.category === '航班'" class="flex items-center gap-3 mb-2">
-                                <i class="fa-solid fa-plane-departure text-ice-blue text-xl"></i><h3 class="font-bold text-lg text-deep-blue">{{ item.name }}</h3>
-                            </div>
-                            <h3 v-else class="font-bold text-lg text-gray-700 mb-1 flex flex-wrap items-center gap-2">
-                                {{ item.name }}
-                                <button v-if="item.timetableId" @click.stop="openBusModal(item.timetableId)" class="text-xs bg-deep-blue text-white px-3 py-1 rounded-full flex items-center gap-1 hover:bg-blue-600 shadow-md transition-transform active:scale-95">
-                                    <i class="fa-solid fa-clock"></i> {{ item.timetableLabel || '時刻表' }}
-                                </button>
-                                <button v-if="item.timetableId2" @click.stop="openBusModal(item.timetableId2)" class="text-xs bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-600 shadow-md transition-transform active:scale-95">
-                                    <i class="fa-solid fa-clock"></i> {{ item.timetableLabel2 }}
-                                </button>
+                            <div v-if="item.category === '航班'" class="flex items-center gap-3 mb-2"><i class="fa-solid fa-plane-departure text-ice-blue text-xl"></i><h3 class="font-bold text-lg text-deep-blue">{{ item.name }}</h3></div>
+                            <h3 v-else class="font-bold text-lg text-gray-700 mb-1 flex flex-wrap items-center gap-2">{{ item.name }}
+                                <button v-if="item.timetableId" @click.stop="openBusModal(item.timetableId)" class="text-xs bg-deep-blue text-white px-3 py-1 rounded-full flex items-center gap-1 hover:bg-blue-600 shadow-md transition-transform active:scale-95"><i class="fa-solid fa-clock"></i> {{ item.timetableLabel || '時刻表' }}</button>
+                                <button v-if="item.timetableId2" @click.stop="openBusModal(item.timetableId2)" class="text-xs bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-600 shadow-md transition-transform active:scale-95"><i class="fa-solid fa-clock"></i> {{ item.timetableLabel2 }}</button>
                             </h3>
-                            
                             <div class="space-y-1 text-sm text-gray-500 font-medium">
                                 <div v-if="item.hours"><i class="fa-regular fa-clock w-5 text-center text-xs opacity-70"></i> {{ item.hours }}</div>
                                 <div v-if="item.ticket"><i class="fa-solid fa-ticket w-5 text-center text-xs text-accent-red opacity-70"></i> {{ item.ticket }}</div>
                                 <div v-if="item.note" class="text-xs mt-2 p-2 bg-blue-50/50 rounded-xl text-gray-500 border-l-4 border-ice-blue">{{ item.note }}</div>
                             </div>
-
                             <div class="mt-3 flex justify-end gap-2 border-t border-gray-50 pt-2" @click.stop>
                                 <button @click="moveItem(index, -1)" v-if="index > 0" class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 text-xs"><i class="fa-solid fa-arrow-up"></i></button>
                                 <button @click="moveItem(index, 1)" v-if="index < currentDayItems.length - 1" class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 text-xs"><i class="fa-solid fa-arrow-down"></i></button>
@@ -153,97 +129,34 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="relative z-10 pl-12 pb-20">
-                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 border border-gray-100 shadow-sm relative overflow-hidden">
-                        <i class="fa-solid fa-quote-left absolute top-2 left-2 text-gray-100 text-4xl -z-0"></i>
-                        <h4 class="font-bold text-gray-700 text-sm mb-1 relative z-10 flex items-center gap-2"><i class="fa-solid fa-map-pin text-accent-red"></i> 關於{{ days[selectedDayIndex].location }}</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed relative z-10 text-justify">{{ days[selectedDayIndex].intro }}</p>
-                    </div>
+                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 border border-gray-100 shadow-sm relative overflow-hidden"><i class="fa-solid fa-quote-left absolute top-2 left-2 text-gray-100 text-4xl -z-0"></i><h4 class="font-bold text-gray-700 text-sm mb-1 relative z-10 flex items-center gap-2"><i class="fa-solid fa-map-pin text-accent-red"></i> 關於{{ days[selectedDayIndex].location }}</h4><p class="text-xs text-gray-500 leading-relaxed relative z-10 text-justify">{{ days[selectedDayIndex].intro }}</p></div>
                 </div>
             </div>
-            
             <button @click="openAddModal" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
         <div v-if="currentTab === 'info'" class="space-y-6 pt-4 pb-20 fade-in">
-            <div class="bg-red-50 p-5 rounded-3xl border border-red-100 shadow-sm">
-                <h3 class="font-bold text-red-500 mb-3 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 緊急聯絡 (日本)</h3>
-                <div class="flex justify-around text-center gap-4">
-                    <a href="tel:110" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition">
-                        <div class="text-3xl mb-1">👮</div><div class="text-sm font-bold text-gray-700">警察 110</div>
-                    </a>
-                    <a href="tel:119" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition">
-                        <div class="text-3xl mb-1">🚑</div><div class="text-sm font-bold text-gray-700">救護/火警 119</div>
-                    </a>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-calculator mr-2 text-ice-blue"></i> 匯率小幫手</h3>
-                <div class="flex gap-2 items-center">
-                    <div class="flex-1"><label class="text-xs text-gray-400 font-bold ml-1">日幣 (JPY)</label><input type="number" v-model="calcJpy" class="w-full bg-gray-50 p-3 rounded-2xl border-none text-lg font-bold text-gray-700" placeholder="¥"></div>
-                    <i class="fa-solid fa-arrow-right text-gray-300 mt-5"></i>
-                    <div class="flex-1"><label class="text-xs text-gray-400 font-bold ml-1">台幣 (TWD)</label><div class="w-full bg-blue-50 p-3 rounded-2xl border border-blue-100 text-lg font-bold text-deep-blue">${{ (calcJpy * rate).toFixed(0) }}</div></div>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-plane mr-2 text-ice-blue"></i> 航班資訊</h3>
-                <div class="space-y-4">
-                    <div v-for="flight in flights" class="border-l-4 border-ice-blue pl-4 py-1">
-                        <div class="flex justify-between items-center mb-1"><span class="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">{{ flight.type }}</span><span class="text-xs font-bold text-gray-400 tracking-wider">{{ flight.code }}</span></div>
-                        <div class="font-bold text-gray-700 text-lg">{{ flight.route }}</div><div class="text-sm text-gray-500 font-medium">{{ flight.time }}</div><div class="text-xs text-gray-400 mt-1 font-medium">{{ flight.terminal }}</div>
-                    </div>
-                </div>
-            </div>
-            <a href="https://www.navitime.co.jp/zh-tw/transfer/" target="_blank" class="block bg-green-500 text-white p-4 rounded-2xl shadow-md flex items-center justify-between active:scale-95 transition">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-train text-xl"></i><span class="font-bold tracking-wide">乘換案內 (NAVITIME)</span></div><i class="fa-solid fa-chevron-right opacity-50"></i>
-            </a>
-            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-language mr-2 text-ice-blue"></i> 日本地名對照</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div v-for="place in locationGlossary" class="bg-gray-50 p-2 rounded-xl flex flex-col items-center justify-center text-center"><div class="font-bold text-gray-700">{{ place.name }}</div><div class="text-xs text-gray-400 font-mono mt-0.5">{{ place.romaji }}</div></div>
-                </div>
-            </div>
-            <div class="space-y-3">
-                <h3 class="font-bold text-gray-500 pl-2 text-sm">住宿資訊</h3>
-                <div v-for="hotel in hotels" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <div class="flex justify-between items-start"><div class="text-xs bg-gray-100 px-2 py-1 rounded-lg text-gray-500 font-bold">{{ hotel.date }}</div><a :href="'https://www.google.com/maps/search/?api=1&query='+hotel.address" target="_blank" class="text-deep-blue bg-blue-50 w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-location-arrow"></i></a></div>
-                    <div class="font-bold text-gray-800 mt-2 text-lg">{{ hotel.name }}</div><div class="text-xs text-gray-500 mt-1 font-medium">{{ hotel.address }}</div><div class="text-xs text-gray-400 mt-2 font-medium flex items-center"><i class="fa-solid fa-phone mr-2 text-ice-blue"></i> {{ hotel.phone }}</div>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-3xl shadow-sm border border-yellow-200 bg-yellow-50/30">
-                <h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-file-shield mr-2 text-yellow-500"></i> 旅遊保險資訊</h3>
-                <textarea v-model="insuranceInfo" placeholder="請在此輸入保險公司、保單號碼、海外緊急救援電話..." class="w-full p-3 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 h-24 focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400 outline-none"></textarea>
-                <p class="text-[10px] text-gray-400 mt-2 text-right">*系統會自動儲存您輸入的內容</p>
-            </div>
+            <div class="bg-red-50 p-5 rounded-3xl border border-red-100 shadow-sm"><h3 class="font-bold text-red-500 mb-3 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 緊急聯絡 (日本)</h3><div class="flex justify-around text-center gap-4"><a href="tel:110" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition"><div class="text-3xl mb-1">👮</div><div class="text-sm font-bold text-gray-700">警察 110</div></a><a href="tel:119" class="block flex-1 bg-white p-3 rounded-2xl shadow-sm active:scale-95 transition"><div class="text-3xl mb-1">🚑</div><div class="text-sm font-bold text-gray-700">救護/火警 119</div></a></div></div>
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100"><h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-calculator mr-2 text-ice-blue"></i> 匯率小幫手</h3><div class="flex gap-2 items-center"><div class="flex-1"><label class="text-xs text-gray-400 font-bold ml-1">日幣 (JPY)</label><input type="number" v-model="calcJpy" class="w-full bg-gray-50 p-3 rounded-2xl border-none text-lg font-bold text-gray-700" placeholder="¥"></div><i class="fa-solid fa-arrow-right text-gray-300 mt-5"></i><div class="flex-1"><label class="text-xs text-gray-400 font-bold ml-1">台幣 (TWD)</label><div class="w-full bg-blue-50 p-3 rounded-2xl border border-blue-100 text-lg font-bold text-deep-blue">${{ (calcJpy * rate).toFixed(0) }}</div></div></div></div>
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100"><h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-plane mr-2 text-ice-blue"></i> 航班資訊</h3><div class="space-y-4"><div v-for="flight in flights" class="border-l-4 border-ice-blue pl-4 py-1"><div class="flex justify-between items-center mb-1"><span class="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">{{ flight.type }}</span><span class="text-xs font-bold text-gray-400 tracking-wider">{{ flight.code }}</span></div><div class="font-bold text-gray-700 text-lg">{{ flight.route }}</div><div class="text-sm text-gray-500 font-medium">{{ flight.time }}</div><div class="text-xs text-gray-400 mt-1 font-medium">{{ flight.terminal }}</div></div></div></div>
+            <a href="https://www.navitime.co.jp/zh-tw/transfer/" target="_blank" class="block bg-green-500 text-white p-4 rounded-2xl shadow-md flex items-center justify-between active:scale-95 transition"><div class="flex items-center gap-3"><i class="fa-solid fa-train text-xl"></i><span class="font-bold tracking-wide">乘換案內 (NAVITIME)</span></div><i class="fa-solid fa-chevron-right opacity-50"></i></a>
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100"><h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-language mr-2 text-ice-blue"></i> 日本地名對照</h3><div class="grid grid-cols-2 gap-3"><div v-for="place in locationGlossary" class="bg-gray-50 p-2 rounded-xl flex flex-col items-center justify-center text-center"><div class="font-bold text-gray-700">{{ place.name }}</div><div class="text-xs text-gray-400 font-mono mt-0.5">{{ place.romaji }}</div></div></div></div>
+            <div class="space-y-3"><h3 class="font-bold text-gray-500 pl-2 text-sm">住宿資訊</h3><div v-for="hotel in hotels" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100"><div class="flex justify-between items-start"><div class="text-xs bg-gray-100 px-2 py-1 rounded-lg text-gray-500 font-bold">{{ hotel.date }}</div><a :href="'https://www.google.com/maps/search/?api=1&query='+hotel.address" target="_blank" class="text-deep-blue bg-blue-50 w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-location-arrow"></i></a></div><div class="font-bold text-gray-800 mt-2 text-lg">{{ hotel.name }}</div><div class="text-xs text-gray-500 mt-1 font-medium">{{ hotel.address }}</div><div class="text-xs text-gray-400 mt-2 font-medium flex items-center"><i class="fa-solid fa-phone mr-2 text-ice-blue"></i> {{ hotel.phone }}</div></div></div>
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-yellow-200 bg-yellow-50/30"><h3 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fa-solid fa-file-shield mr-2 text-yellow-500"></i> 旅遊保險資訊</h3><textarea v-model="insuranceInfo" placeholder="請在此輸入保險公司、保單號碼、海外緊急救援電話..." class="w-full p-3 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 h-24 focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400 outline-none"></textarea><p class="text-[10px] text-gray-400 mt-2 text-right">*系統會自動儲存您輸入的內容</p></div>
         </div>
 
         <div v-if="currentTab === 'shopping'" class="pb-20 fade-in pt-4">
-            <div class="grid grid-cols-2 gap-4">
-                <div v-for="(item, idx) in shoppingList" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group">
-                    <button @click="removeShoppingItem(idx)" class="absolute top-2 right-2 bg-white/90 rounded-full w-7 h-7 flex items-center justify-center text-red-400 shadow z-10 hover:text-red-600"><i class="fa-solid fa-times"></i></button>
-                    <div class="h-36 bg-gray-50 flex items-center justify-center overflow-hidden"><img v-if="item.image" :src="item.image" class="w-full h-full object-cover"><i v-else class="fa-solid fa-image text-gray-200 text-3xl"></i></div>
-                    <div class="p-3"><div class="font-bold text-sm text-gray-700 truncate">{{ item.name }}</div></div>
-                </div>
-            </div>
+            <div class="grid grid-cols-2 gap-4"><div v-for="(item, idx) in shoppingList" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group"><button @click="removeShoppingItem(idx)" class="absolute top-2 right-2 bg-white/90 rounded-full w-7 h-7 flex items-center justify-center text-red-400 shadow z-10 hover:text-red-600"><i class="fa-solid fa-times"></i></button><div class="h-36 bg-gray-50 flex items-center justify-center overflow-hidden"><img v-if="item.image" :src="item.image" class="w-full h-full object-cover"><i v-else class="fa-solid fa-image text-gray-200 text-3xl"></i></div><div class="p-3"><div class="font-bold text-sm text-gray-700 truncate">{{ item.name }}</div></div></div></div>
             <div v-if="shoppingList.length === 0" class="text-center text-gray-300 mt-20"><i class="fa-solid fa-basket-shopping text-5xl mb-3 opacity-30"></i><p class="font-bold">購物清單是空的</p><p class="text-xs mt-1">按右下角 + 開始新增</p></div>
             <button @click="showShopModal = true" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
         <div v-if="currentTab === 'expenses'" class="pb-20 fade-in pt-4 space-y-4">
-            <div class="bg-deep-blue text-white p-6 rounded-3xl shadow-lg shadow-blue-200 relative overflow-hidden">
-                <div class="absolute -right-6 -top-6 text-white/10 text-[10rem] rotate-12"><i class="fa-solid fa-yen-sign"></i></div>
-                <div class="relative z-10"><div class="text-sm opacity-80 font-bold tracking-wide">總花費 (JPY)</div><div class="text-4xl font-bold mt-1 tracking-tight">¥{{ totalExpense.toLocaleString() }}</div><div class="text-xs opacity-60 mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded-lg">約 TWD {{ (totalExpense * rate).toFixed(0).toLocaleString() }}</div></div>
-            </div>
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden px-2">
-                <div v-for="(exp, idx) in sortedExpenses" :key="idx" class="p-4 border-b border-gray-50 flex justify-between items-center last:border-0">
-                    <div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-lg text-blue-400"><i :class="getExpenseIcon(exp.category)"></i></div><div><div class="font-bold text-gray-700 text-sm">{{ exp.name }}</div><div class="text-xs text-gray-400 font-medium mt-0.5">{{ exp.date }} · {{ exp.payment }}</div></div></div>
-                    <div class="text-right"><div class="font-bold text-gray-800">¥{{ parseInt(exp.amount).toLocaleString() }}</div><button @click="removeExpense(idx)" class="text-xs text-red-300 hover:text-red-500 mt-1 font-bold">刪除</button></div>
-                </div>
-            </div>
+            <div class="bg-deep-blue text-white p-6 rounded-3xl shadow-lg shadow-blue-200 relative overflow-hidden"><div class="absolute -right-6 -top-6 text-white/10 text-[10rem] rotate-12"><i class="fa-solid fa-yen-sign"></i></div><div class="relative z-10"><div class="text-sm opacity-80 font-bold tracking-wide">總花費 (JPY)</div><div class="text-4xl font-bold mt-1 tracking-tight">¥{{ totalExpense.toLocaleString() }}</div><div class="text-xs opacity-60 mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded-lg">約 TWD {{ (totalExpense * rate).toFixed(0).toLocaleString() }}</div></div></div>
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden px-2"><div v-for="(exp, idx) in sortedExpenses" :key="idx" class="p-4 border-b border-gray-50 flex justify-between items-center last:border-0"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-lg text-blue-400"><i :class="getExpenseIcon(exp.category)"></i></div><div><div class="font-bold text-gray-700 text-sm">{{ exp.name }}</div><div class="text-xs text-gray-400 font-medium mt-0.5">{{ exp.date }} · {{ exp.payment }}</div></div></div><div class="text-right"><div class="font-bold text-gray-800">¥{{ parseInt(exp.amount).toLocaleString() }}</div><button @click="removeExpense(idx)" class="text-xs text-red-300 hover:text-red-500 mt-1 font-bold">刪除</button></div></div></div>
             <button @click="showExpenseModal = true" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
-
     </main>
 
     <div v-if="showModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="closeModal">
@@ -254,28 +167,13 @@
                 <input v-model="form.name" placeholder="名稱" class="w-full p-3 bg-gray-50 rounded-2xl border-none font-bold text-gray-700">
                 <div class="flex gap-3"><input v-model="form.startTime" type="time" class="w-1/2 p-3 bg-gray-50 rounded-2xl border-none font-bold text-gray-700"><input v-model="form.hours" placeholder="營業時間" class="w-1/2 p-3 bg-gray-50 rounded-2xl border-none font-bold text-gray-700"></div>
                 <div class="text-xs text-gray-400 ml-1">進階：時刻表代碼 (如 zao_bus)</div><input v-model="form.timetableId" placeholder="無" class="w-full p-2 bg-gray-50 rounded-xl border-none text-xs text-gray-500">
-                <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
-                    <label class="text-xs text-blue-500 font-bold block mb-2">交通方式 (前一站出發)</label>
-                    <div class="flex gap-2"><select v-model="form.transportType" class="p-2 text-sm rounded-xl border-none bg-white text-gray-600 font-bold"><option value="walk">步行</option><option value="car">開車</option><option value="transit">大眾運輸</option></select><input v-model="form.travelTime" placeholder="例: 15分" class="flex-1 p-2 text-sm rounded-xl border-none bg-white font-bold text-gray-700"></div>
-                </div>
+                <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100"><label class="text-xs text-blue-500 font-bold block mb-2">交通方式 (前一站出發)</label><div class="flex gap-2"><select v-model="form.transportType" class="p-2 text-sm rounded-xl border-none bg-white text-gray-600 font-bold"><option value="walk">步行</option><option value="car">開車</option><option value="transit">大眾運輸</option></select><input v-model="form.travelTime" placeholder="例: 15分" class="flex-1 p-2 text-sm rounded-xl border-none bg-white font-bold text-gray-700"></div></div>
                 <input v-model="form.ticket" placeholder="門票" class="w-full p-3 bg-gray-50 rounded-2xl border-none font-bold text-gray-700"><textarea v-model="form.note" placeholder="備註" class="w-full p-3 bg-gray-50 rounded-2xl border-none font-bold text-gray-700 h-20 resize-none"></textarea>
             </div>
             <div class="flex gap-3 mt-6"><button v-if="isEditing" @click="deleteItem" class="flex-1 py-3 rounded-2xl bg-red-50 text-red-500 font-bold">刪除</button><button @click="saveItem" class="flex-[2] py-3 rounded-2xl bg-deep-blue text-white font-bold shadow-lg shadow-blue-200">儲存</button></div>
         </div>
     </div>
-
-    <div v-if="showBusModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" @click.self="showBusModal = false">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
-            <button @click="showBusModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
-            <h3 class="text-xl font-bold mb-1 text-center text-gray-800"><i class="fa-solid fa-bus text-deep-blue mr-2"></i>巴士/JR 時刻表</h3>
-            <p class="text-center text-xs text-gray-400 mb-4">{{ currentBusRoute }}</p>
-            <div class="overflow-y-auto max-h-[60vh] rounded-xl border border-gray-100">
-                <table class="w-full text-sm text-center"><thead class="bg-blue-50 text-deep-blue font-bold sticky top-0"><tr><th class="py-2">出發</th><th class="py-2">抵達</th></tr></thead><tbody class="divide-y divide-gray-50 text-gray-600"><tr v-for="time in currentBusSchedule" class="odd:bg-white even:bg-gray-50/50"><td class="py-2 font-mono font-bold">{{ time.dep }}</td><td class="py-2 font-mono">{{ time.arr }}</td></tr></tbody></table>
-            </div>
-            <p class="text-[10px] text-gray-400 mt-3 text-center">*此為預定表，實際以現場為準</p>
-        </div>
-    </div>
-
+    <div v-if="showBusModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" @click.self="showBusModal = false"><div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative"><button @click="showBusModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button><h3 class="text-xl font-bold mb-1 text-center text-gray-800"><i class="fa-solid fa-bus text-deep-blue mr-2"></i>巴士/JR 時刻表</h3><p class="text-center text-xs text-gray-400 mb-4">{{ currentBusRoute }}</p><div class="overflow-y-auto max-h-[60vh] rounded-xl border border-gray-100"><table class="w-full text-sm text-center"><thead class="bg-blue-50 text-deep-blue font-bold sticky top-0"><tr><th class="py-2">出發</th><th class="py-2">抵達</th></tr></thead><tbody class="divide-y divide-gray-50 text-gray-600"><tr v-for="time in currentBusSchedule" class="odd:bg-white even:bg-gray-50/50"><td class="py-2 font-mono font-bold">{{ time.dep }}</td><td class="py-2 font-mono">{{ time.arr }}</td></tr></tbody></table></div><p class="text-[10px] text-gray-400 mt-3 text-center">*此為預定表，實際以現場為準</p></div></div>
     <div v-if="showShopModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="showShopModal = false"><div class="bg-white w-80 rounded-3xl p-6 shadow-2xl"><h3 class="font-bold text-lg mb-4 text-gray-800">新增購物項目</h3><input v-model="shopForm.name" placeholder="商品名稱" class="w-full p-4 bg-gray-50 rounded-2xl mb-3 border-none font-bold text-gray-700"><label class="block w-full p-6 bg-gray-50 rounded-2xl text-center text-gray-400 cursor-pointer border-2 border-dashed border-gray-200 hover:border-blue-300 transition mb-4"><i class="fa-solid fa-camera mb-2 text-2xl"></i><br><span class="text-xs font-bold">上傳圖片</span><input type="file" @change="handleImageUpload" class="hidden" accept="image/*"></label><div v-if="shopForm.image" class="mb-4 h-24 w-full bg-gray-100 rounded-2xl overflow-hidden border border-gray-100"><img :src="shopForm.image" class="w-full h-full object-cover"></div><button @click="saveShopItem" class="w-full py-3 bg-deep-blue text-white rounded-2xl font-bold shadow-lg shadow-blue-200">加入清單</button></div></div>
     <div v-if="showExpenseModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="showExpenseModal = false"><div class="bg-white w-80 rounded-3xl p-6 shadow-2xl"><h3 class="font-bold text-lg mb-4 text-gray-800">記帳</h3><select v-model="expenseForm.category" class="w-full p-3 mb-2 bg-gray-50 rounded-2xl border-none font-bold text-gray-700"><option>飲食</option><option>交通</option><option>住宿</option><option>門票</option><option>購物</option><option>其他</option></select><input v-model="expenseForm.name" placeholder="項目名稱" class="w-full p-3 mb-2 bg-gray-50 rounded-2xl border-none font-bold text-gray-700"><input v-model="expenseForm.amount" type="number" placeholder="金額 (JPY)" class="w-full p-3 mb-2 bg-gray-50 rounded-2xl border-none font-bold text-gray-700"><div class="flex gap-2 mb-2"><input v-model="expenseForm.date" type="date" class="flex-1 p-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-600 border-none"><select v-model="expenseForm.payment" class="flex-1 p-3 bg-gray-50 rounded-2xl text-sm font-bold text-gray-600 border-none"><option>現金</option><option>信用卡</option><option>Suica</option></select></div><button @click="saveExpense" class="w-full py-3 bg-deep-blue text-white rounded-2xl font-bold shadow-lg shadow-blue-200">儲存紀錄</button></div></div>
 
@@ -283,7 +181,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v17.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v20.0'; // Updated version trigger
 
     createApp({
         setup() {
