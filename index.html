@@ -23,25 +23,26 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Banner 遮罩，下方圓弧 */
+        /* Banner 遮罩 */
         .banner-mask {
             border-radius: 0 0 40px 40px;
             box-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.5);
         }
 
-        /* 按鈕玻璃擬態效果 */
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        /* 底部導覽列按鈕樣式 */
+        .nav-btn {
+            color: #94a3b8; /* 預設灰色 */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .glass-btn.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #3B82F6;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: scale(1.05);
+        
+        /* 選中狀態：深藍色背景，白色文字，強烈按鈕感 */
+        .nav-btn.active {
+            color: white;
+            background-color: #3B82F6; /* deep-blue */
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
         }
 
         .fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
@@ -57,38 +58,21 @@
 </head>
 <body>
 
-<div id="app" class="pb-24 min-h-screen relative">
-
-    <header class="relative w-full h-[320px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
+<div id="app" class="pb-32 min-h-screen relative"> <header class="relative w-full h-[320px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
         <div class="absolute inset-0 bg-cover bg-left" style="background-image: url('Banner5.jpg');"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/30"></div>
         
-        <div class="absolute top-5 right-6 text-white drop-shadow-md text-right z-30">
+        <div class="absolute top-3 right-4 text-white drop-shadow-md text-right z-30">
             <h1 class="text-3xl font-bold tracking-widest opacity-95 text-shadow-sm leading-snug">
                 雪怪暖燈<br>二重奏
             </h1>
-            <div class="mt-2 flex justify-end">
+            <div class="mt-1 flex justify-end">
                 <span class="text-[10px] font-bold tracking-widest opacity-80 border-t border-white/60 pt-1 block">
                     2026.02.03 - 02.10
                 </span>
             </div>
         </div>
-
-        <div class="absolute bottom-6 right-6 flex gap-3 z-30">
-            <button @click="currentTab = 'schedule'" :class="['glass-btn rounded-2xl w-14 h-14 flex items-center justify-center transition-all duration-300', currentTab === 'schedule' ? 'active' : '']">
-                <i class="fa-solid fa-map-location-dot text-xl"></i>
-            </button>
-            <button @click="currentTab = 'info'" :class="['glass-btn rounded-2xl w-14 h-14 flex items-center justify-center transition-all duration-300', currentTab === 'info' ? 'active' : '']">
-                <i class="fa-solid fa-circle-info text-xl"></i>
-            </button>
-            <button @click="currentTab = 'shopping'" :class="['glass-btn rounded-2xl w-14 h-14 flex items-center justify-center transition-all duration-300', currentTab === 'shopping' ? 'active' : '']">
-                <i class="fa-solid fa-basket-shopping text-xl"></i>
-            </button>
-            <button @click="currentTab = 'expenses'" :class="['glass-btn rounded-2xl w-14 h-14 flex items-center justify-center transition-all duration-300', currentTab === 'expenses' ? 'active' : '']">
-                <i class="fa-solid fa-yen-sign text-xl"></i>
-            </button>
-        </div>
-    </header>
+        </header>
 
     <main class="-mt-6 px-4 relative z-10">
 
@@ -133,7 +117,7 @@
                     <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 border border-gray-100 shadow-sm relative overflow-hidden"><i class="fa-solid fa-quote-left absolute top-2 left-2 text-gray-100 text-4xl -z-0"></i><h4 class="font-bold text-gray-700 text-sm mb-1 relative z-10 flex items-center gap-2"><i class="fa-solid fa-map-pin text-accent-red"></i> 關於{{ days[selectedDayIndex].location }}</h4><p class="text-xs text-gray-500 leading-relaxed relative z-10 text-justify">{{ days[selectedDayIndex].intro }}</p></div>
                 </div>
             </div>
-            <button @click="openAddModal" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
+            <button @click="openAddModal" class="fixed bottom-28 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
         <div v-if="currentTab === 'info'" class="space-y-6 pt-4 pb-20 fade-in">
@@ -149,15 +133,30 @@
         <div v-if="currentTab === 'shopping'" class="pb-20 fade-in pt-4">
             <div class="grid grid-cols-2 gap-4"><div v-for="(item, idx) in shoppingList" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group"><button @click="removeShoppingItem(idx)" class="absolute top-2 right-2 bg-white/90 rounded-full w-7 h-7 flex items-center justify-center text-red-400 shadow z-10 hover:text-red-600"><i class="fa-solid fa-times"></i></button><div class="h-36 bg-gray-50 flex items-center justify-center overflow-hidden"><img v-if="item.image" :src="item.image" class="w-full h-full object-cover"><i v-else class="fa-solid fa-image text-gray-200 text-3xl"></i></div><div class="p-3"><div class="font-bold text-sm text-gray-700 truncate">{{ item.name }}</div></div></div></div>
             <div v-if="shoppingList.length === 0" class="text-center text-gray-300 mt-20"><i class="fa-solid fa-basket-shopping text-5xl mb-3 opacity-30"></i><p class="font-bold">購物清單是空的</p><p class="text-xs mt-1">按右下角 + 開始新增</p></div>
-            <button @click="showShopModal = true" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
+            <button @click="showShopModal = true" class="fixed bottom-28 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
 
         <div v-if="currentTab === 'expenses'" class="pb-20 fade-in pt-4 space-y-4">
             <div class="bg-deep-blue text-white p-6 rounded-3xl shadow-lg shadow-blue-200 relative overflow-hidden"><div class="absolute -right-6 -top-6 text-white/10 text-[10rem] rotate-12"><i class="fa-solid fa-yen-sign"></i></div><div class="relative z-10"><div class="text-sm opacity-80 font-bold tracking-wide">總花費 (JPY)</div><div class="text-4xl font-bold mt-1 tracking-tight">¥{{ totalExpense.toLocaleString() }}</div><div class="text-xs opacity-60 mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded-lg">約 TWD {{ (totalExpense * rate).toFixed(0).toLocaleString() }}</div></div></div>
             <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden px-2"><div v-for="(exp, idx) in sortedExpenses" :key="idx" class="p-4 border-b border-gray-50 flex justify-between items-center last:border-0"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-lg text-blue-400"><i :class="getExpenseIcon(exp.category)"></i></div><div><div class="font-bold text-gray-700 text-sm">{{ exp.name }}</div><div class="text-xs text-gray-400 font-medium mt-0.5">{{ exp.date }} · {{ exp.payment }}</div></div></div><div class="text-right"><div class="font-bold text-gray-800">¥{{ parseInt(exp.amount).toLocaleString() }}</div><button @click="removeExpense(idx)" class="text-xs text-red-300 hover:text-red-500 mt-1 font-bold">刪除</button></div></div></div>
-            <button @click="showExpenseModal = true" class="fixed bottom-6 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
+            <button @click="showExpenseModal = true" class="fixed bottom-28 right-6 w-14 h-14 bg-deep-blue text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hover:scale-110 transition active:scale-95"><i class="fa-solid fa-plus"></i></button>
         </div>
     </main>
+
+    <nav class="fixed bottom-6 left-6 right-6 h-20 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/50 flex justify-around items-center z-50 px-2">
+        <button @click="currentTab = 'schedule'" :class="['nav-btn w-14 h-14 rounded-2xl flex flex-col items-center justify-center', currentTab === 'schedule' ? 'active' : 'hover:bg-white/50']">
+            <i class="fa-solid fa-map-location-dot text-xl mb-1"></i><span class="text-[9px] font-bold">行程</span>
+        </button>
+        <button @click="currentTab = 'info'" :class="['nav-btn w-14 h-14 rounded-2xl flex flex-col items-center justify-center', currentTab === 'info' ? 'active' : 'hover:bg-white/50']">
+            <i class="fa-solid fa-circle-info text-xl mb-1"></i><span class="text-[9px] font-bold">資訊</span>
+        </button>
+        <button @click="currentTab = 'shopping'" :class="['nav-btn w-14 h-14 rounded-2xl flex flex-col items-center justify-center', currentTab === 'shopping' ? 'active' : 'hover:bg-white/50']">
+            <i class="fa-solid fa-basket-shopping text-xl mb-1"></i><span class="text-[9px] font-bold">購物</span>
+        </button>
+        <button @click="currentTab = 'expenses'" :class="['nav-btn w-14 h-14 rounded-2xl flex flex-col items-center justify-center', currentTab === 'expenses' ? 'active' : 'hover:bg-white/50']">
+            <i class="fa-solid fa-yen-sign text-xl mb-1"></i><span class="text-[9px] font-bold">記帳</span>
+        </button>
+    </nav>
 
     <div v-if="showModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="closeModal">
         <div class="bg-white w-full sm:w-96 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-slide-up">
@@ -181,7 +180,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v20.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v21.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -382,6 +381,10 @@
                 } 
             };
 
+            const printBooklet = () => {
+                window.print();
+            };
+
             onMounted(() => expenseForm.value.date = new Date().toISOString().split('T')[0]);
 
             return {
@@ -391,7 +394,8 @@
                 showBusModal, currentBusSchedule, currentBusRoute, locationGlossary, insuranceInfo,
                 tabClass, getCategoryColor, transportIcon, getExpenseIcon,
                 openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
-                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal
+                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal,
+                printBooklet
             };
         }
     }).mount('#app');
