@@ -258,7 +258,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v8.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v12.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -291,7 +291,6 @@
 
             const locationGlossary = ref([
                 { name: '山形', romaji: 'Yamagata' }, { name: '藏王', romaji: 'Zao' }, { name: '仙台', romaji: 'Sendai' },
-                { name: '山寺', romaji: 'Yamadera' },
                 { name: '銀山溫泉', romaji: 'Ginzan Onsen' }, { name: '大石田', romaji: 'Oishida' }, { name: '奧入瀨', romaji: 'Oirase' },
                 { name: '青森', romaji: 'Aomori' }, { name: '八戶', romaji: 'Hachinohe' }, { name: '三澤', romaji: 'Misawa' },
                 { name: '羽田', romaji: 'Haneda' }, { name: '東京', romaji: 'Tokyo' }
@@ -331,7 +330,7 @@
                 { id: 107, date: '2026-02-03', name: '高見屋 瑠璃俱樂度假區', category: '住宿', startTime: '15:00', hours: 'Check-in', ticket: '', note: '藏王溫泉 Check-in', transportType: 'walk', travelTime: '10分' },
                 
                 // Day 2: 2/4
-                { id: 201, date: '2026-02-04', name: '藏王樹冰 (Zao Ropeway)', category: '景點', startTime: '09:00', hours: '08:30-17:00', ticket: '3500円', note: '山頂線看樹冰', transportType: 'walk', travelTime: '15分' },
+                { id: 201, date: '2026-02-04', name: '藏王樹冰', category: '景點', startTime: '09:00', hours: '08:30-17:00', ticket: '3500円', note: '山頂線看樹冰', transportType: 'walk', travelTime: '15分' },
                 { id: 202, date: '2026-02-04', name: '溫泉街咖啡 & 散策', category: '美食', startTime: '13:00', hours: '', ticket: '', note: '山口餅屋 (麻糬) / 音茶屋', transportType: 'walk', travelTime: '5分' },
                 { id: 203, date: '2026-02-04', name: '藏王大露天風呂', category: '景點', startTime: '15:00', hours: '', ticket: '600円', note: '體驗雪中溫泉 (視開放狀況)', transportType: 'walk', travelTime: '15分' },
                 
@@ -346,10 +345,14 @@
                 { id: 308, date: '2026-02-05', name: '回飯店整理 & 寄行李', category: '其他', startTime: '20:30', hours: '', ticket: '', note: '黑貓宅急便寄往星野奧入瀨', transportType: 'walk', travelTime: '10分' },
 
                 // Day 4: 2/6
-                { id: 401, date: '2026-02-06', name: '仙台 - 山形 - 大石田', category: '交通', startTime: '10:00', hours: '', ticket: '', note: '轉乘往銀山', transportType: 'transit', travelTime: '1.5hr' },
-                { id: 402, date: '2026-02-06', name: '大石田 - 銀山溫泉', category: '交通', startTime: '13:00', hours: '', ticket: '', note: '接駁巴士', transportType: 'transit', travelTime: '40分' },
-                { id: 403, date: '2026-02-06', name: '御宿 やなだ屋', category: '住宿', startTime: '15:00', hours: '', ticket: '', note: 'Check-in', transportType: 'walk', travelTime: '5分' },
-                { id: 404, date: '2026-02-06', name: '銀山溫泉街夜拍', category: '景點', startTime: '17:30', hours: '', ticket: '', note: '神隱少女場景', transportType: 'walk', travelTime: '0分' },
+                { id: 401, date: '2026-02-06', name: '仙台早晨 (朝市/補貨)', category: '購物', startTime: '09:00', hours: '', ticket: '', note: '仙台朝市或車站周邊', transportType: 'walk', travelTime: '' },
+                { id: 402, date: '2026-02-06', name: '仙台午餐 (壽司通)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台車站 3F', transportType: 'walk', travelTime: '0分' },
+                { id: 403, date: '2026-02-06', name: '移動：仙台 - 山形', category: '交通', startTime: '12:50', hours: '12:50-14:12', ticket: '', note: 'JR 仙山線快速 (仙台發)', transportType: 'transit', travelTime: '1hr 22m' },
+                { id: 404, date: '2026-02-06', name: '山形車站休息', category: '其他', startTime: '14:12', hours: '停留 30分', ticket: '', note: '購買補給品、休息', transportType: 'walk', travelTime: '0分' },
+                { id: 405, date: '2026-02-06', name: '移動：山形 - 大石田', category: '交通', startTime: '14:44', hours: '14:44-15:15', ticket: '', note: 'Tsubasa 137 (山形發)', transportType: 'transit', travelTime: '31分' },
+                { id: 406, date: '2026-02-06', name: '接駁巴士往銀山', category: '交通', startTime: '15:40', hours: '', ticket: '預約制', note: '御宿 やなだ屋 接駁車', transportType: 'transit', travelTime: '40分' },
+                { id: 407, date: '2026-02-06', name: '御宿 やなだ屋', category: '住宿', startTime: '16:20', hours: '', ticket: '', note: 'Check-in', transportType: 'walk', travelTime: '0分' },
+                { id: 408, date: '2026-02-06', name: '銀山溫泉夜景', category: '景點', startTime: '17:00', hours: '', ticket: '', note: 'Blue Hour 最佳拍攝時間', transportType: 'walk', travelTime: '0分' },
                 
                 // Day 5: 2/7 (Precise Times)
                 { id: 501, date: '2026-02-07', name: '銀山 - 大石田', category: '交通', startTime: '08:25', hours: '08:25-09:01', ticket: '', note: '接駁車', transportType: 'transit', travelTime: '40分' },
