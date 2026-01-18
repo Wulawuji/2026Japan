@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>東北雪旅 2026</title>
+    <title>雪怪暖燈二重奏</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        /* 引入文青風襯線體 (Shippori Mincho) 與原本的圓體 */
+        @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
         
         body {
             font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
@@ -17,6 +18,12 @@
             -webkit-tap-highlight-color: transparent;
             letter-spacing: 0.05em;
         }
+        
+        /* 標題專用字體 */
+        .font-literary {
+            font-family: 'Shippori Mincho', 'Noto Serif TC', serif;
+        }
+
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .banner-mask {
@@ -43,11 +50,15 @@
 
     <header class="relative w-full h-[250px] bg-gray-200 banner-mask z-20 overflow-hidden shrink-0">
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('Banner5.jpg');"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/10"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30"></div>
         
-        <div class="absolute top-8 right-6 text-white drop-shadow-md text-right">
-            <h1 class="text-3xl font-bold tracking-wider">東北雪旅</h1>
-            <p class="text-sm opacity-90 mt-1 font-medium bg-black/20 inline-block px-3 py-1 rounded-full backdrop-blur-sm">2026.02.03 - 02.10</p>
+        <div class="absolute top-10 right-6 text-white drop-shadow-md text-right">
+            <h1 class="text-3xl font-bold font-literary tracking-[0.2em] opacity-95 text-shadow-sm">雪怪暖燈二重奏</h1>
+            <div class="mt-3 flex justify-end">
+                <span class="text-xs font-light tracking-[0.15em] opacity-90 border-t border-white/60 pt-1.5 font-literary">
+                    2026.02.03 - 02.10
+                </span>
+            </div>
         </div>
 
         <div class="absolute bottom-4 right-4 flex gap-3 z-30">
@@ -258,7 +269,7 @@
 
 <script>
     const { createApp, ref, computed, onMounted, watch } = Vue;
-    const DATA_VERSION = '2026-v12.0'; // Updated version trigger
+    const DATA_VERSION = '2026-v13.0'; // Updated version trigger
 
     createApp({
         setup() {
@@ -281,7 +292,7 @@
             const days = [
                 { date: '2026-02-03', weekday: 'Tue', dayNum: '3', location: '東京/山形', intro: '藏王溫泉（Zao Onsen）以強酸性硫磺泉聞名，冬季的「樹冰」奇景更是世界級景觀，被稱為「雪怪」。' },
                 { date: '2026-02-04', weekday: 'Wed', dayNum: '4', location: '藏王溫泉', intro: '搭乘藏王纜車可俯瞰壯觀的樹冰原。這裡也是滑雪勝地，擁有單板雙板都適合的廣闊雪道。' },
-                { date: '2026-02-05', weekday: 'Thu', dayNum: '5', location: '山形/仙台', intro: '仙台是東北購物天堂！從車站連接的 S-PAL、Parco，到著名的 Clis Road 商店街，藥妝、服飾、雜貨應有盡有。晚餐推薦仙台冬季限定的「芹菜鍋」。' },
+                { date: '2026-02-05', weekday: 'Thu', dayNum: '5', location: '山形/仙台', intro: '仙台是東北購物天堂！從車站連接的 S-PAL、Parco，到著名的 Clis Road 商店街，藥妝、服飾、雜貨應有盡有。' },
                 { date: '2026-02-06', weekday: 'Fri', dayNum: '6', location: '銀山溫泉', intro: '銀山溫泉（Ginzan Onsen）保留了大正浪漫時期的木造建築，夜晚煤氣燈亮起時，彷彿進入《神隱少女》的世界。' },
                 { date: '2026-02-07', weekday: 'Sat', dayNum: '7', location: '奧入瀨', intro: '奧入瀨溪流（Oirase Gorge）冬季會形成壯觀的冰瀑，星野度假村提供專屬的冰瀑夜遊活動。' },
                 { date: '2026-02-08', weekday: 'Sun', dayNum: '8', location: '青森屋', intro: '日本本州最北端的縣，壯麗的自然風光如世界遺產白神山地、十和田湖、奧入瀨溪流、熱鬧的傳統青森睡魔祭和美味的特產蘋果、海鮮、日本酒而聞名，四季分明，擁有獨特的魅力。' },
@@ -291,6 +302,7 @@
 
             const locationGlossary = ref([
                 { name: '山形', romaji: 'Yamagata' }, { name: '藏王', romaji: 'Zao' }, { name: '仙台', romaji: 'Sendai' },
+                { name: '山寺', romaji: 'Yamadera' },
                 { name: '銀山溫泉', romaji: 'Ginzan Onsen' }, { name: '大石田', romaji: 'Oishida' }, { name: '奧入瀨', romaji: 'Oirase' },
                 { name: '青森', romaji: 'Aomori' }, { name: '八戶', romaji: 'Hachinohe' }, { name: '三澤', romaji: 'Misawa' },
                 { name: '羽田', romaji: 'Haneda' }, { name: '東京', romaji: 'Tokyo' }
@@ -344,7 +356,7 @@
                 { id: 307, date: '2026-02-05', name: '米澤牛燒肉 仔虎 (S-PAL店)', category: '美食', startTime: '18:30', hours: '', ticket: '建議預約', note: '不吃魚的好選擇：A5仙台牛燒肉', transportType: 'walk', travelTime: '5分' },
                 { id: 308, date: '2026-02-05', name: '回飯店整理 & 寄行李', category: '其他', startTime: '20:30', hours: '', ticket: '', note: '黑貓宅急便寄往星野奧入瀨', transportType: 'walk', travelTime: '10分' },
 
-                // Day 4: 2/6
+                // Day 4: 2/6 (Updated)
                 { id: 401, date: '2026-02-06', name: '仙台早晨 (朝市/補貨)', category: '購物', startTime: '09:00', hours: '', ticket: '', note: '仙台朝市或車站周邊', transportType: 'walk', travelTime: '' },
                 { id: 402, date: '2026-02-06', name: '仙台午餐 (壽司通)', category: '美食', startTime: '11:30', hours: '', ticket: '', note: '仙台車站 3F', transportType: 'walk', travelTime: '0分' },
                 { id: 403, date: '2026-02-06', name: '移動：仙台 - 山形', category: '交通', startTime: '12:50', hours: '12:50-14:12', ticket: '', note: 'JR 仙山線快速 (仙台發)', transportType: 'transit', travelTime: '1hr 22m' },
