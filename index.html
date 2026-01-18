@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <meta name="apple-mobile-web-app-title" content="雪怪暖燈"> <link rel="apple-touch-icon" href="icon.jpg?v=2"> <title>雪怪暖燈二重奏</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="雪怪暖燈">
+    
+    <link rel="apple-touch-icon" href="icon2.jpg">
+    <link rel="icon" type="image/jpg" href="icon2.jpg">
+    <title>雪怪暖燈二重奏</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,18 +24,19 @@
             color: #475569;
             -webkit-tap-highlight-color: transparent;
             letter-spacing: 0.05em;
-            /* 關鍵：讓底部留白適應 iPhone 的 Home Bar */
-            padding-bottom: env(safe-area-inset-bottom); 
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Banner 遮罩 */
         .banner-mask {
             border-radius: 0 0 40px 40px;
             box-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.5);
         }
 
+        /* 按鈕玻璃擬態效果 */
         .glass-btn {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(8px);
@@ -262,7 +269,7 @@
                 // Day 1: 2/3
                 { id: 101, date: '2026-02-03', name: 'IT216 桃園 - 羽田', category: '航班', startTime: '00:10', hours: '00:10-04:00', ticket: '', note: '第三航廈', transportType: '', travelTime: '' },
                 { id: 102, date: '2026-02-03', name: '羽田機場換 JR PASS', category: '其他', startTime: '06:00', hours: '', ticket: '', note: '第二航廈旅行服務中心', transportType: 'walk', travelTime: '機場內' },
-                { id: 103, date: '2026-02-03', name: '移動至東京車站', category: '交通', startTime: '07:00', hours: '', ticket: 'JR PASS', note: '單軌電車至濱松町轉山手線', transportType: 'transit', travelTime: '40分' },
+                { id: 103, date: '2026-02-03', name: '羽田機場 - 東京車站', category: '交通', startTime: '07:00', hours: '', ticket: 'JR PASS', note: '單軌電車至濱松町轉山手線', transportType: 'transit', travelTime: '40分' },
                 { id: 104, date: '2026-02-03', name: '東京 - 山形', category: '交通', startTime: '08:56', hours: '08:56-11:38', ticket: 'JR PASS', note: 'Tsubasa 129 新幹線', transportType: 'transit', travelTime: '2.5hr' },
                 { id: 105, date: '2026-02-03', name: '山形車站午餐', category: '美食', startTime: '11:40', hours: '', ticket: '', note: '米澤牛便當?', transportType: 'walk', travelTime: '0分' },
                 { id: 106, date: '2026-02-03', name: '山形 - 藏王溫泉', category: '交通', startTime: '13:20', hours: '', ticket: '1200円', note: '東口巴士總站第一月台', transportType: 'transit', travelTime: '40分', timetableId: 'zao_bus' },
@@ -397,6 +404,10 @@
                 } 
             };
 
+            const printBooklet = () => {
+                window.print();
+            };
+
             onMounted(() => expenseForm.value.date = new Date().toISOString().split('T')[0]);
 
             return {
@@ -406,12 +417,11 @@
                 showBusModal, currentBusSchedule, currentBusRoute, locationGlossary, insuranceInfo,
                 tabClass, getCategoryColor, transportIcon, getExpenseIcon,
                 openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
-                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal
+                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense, openBusModal,
+                printBooklet
             };
         }
     }).mount('#app');
 </script>
 </body>
 </html>
-
-
