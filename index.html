@@ -605,4 +605,52 @@
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.
+                    reader.onload = (e) => shopForm.value.image = e.target.result;
+                    reader.readAsDataURL(file);
+                }
+            };
+            const saveShopItem = () => {
+                if(!shopForm.value.name) return;
+                shoppingList.value.push({ ...shopForm.value });
+                shopForm.value = { name: '', image: null };
+                showShopModal.value = false;
+            };
+            const removeShoppingItem = (idx) => confirm('刪除？') && shoppingList.value.splice(idx, 1);
+            
+            const saveExpense = () => {
+                if(!expenseForm.value.amount) return;
+                expenses.value.push({ ...expenseForm.value, date: expenseForm.value.date || new Date().toISOString().split('T')[0] });
+                showExpenseModal.value = false;
+                expenseForm.value = { category: '飲食', name: '', amount: '', date: '', payment: '現金' };
+            };
+            const removeExpense = (idx) => confirm('刪除？') && expenses.value.splice(idx, 1);
+
+            // 【修改 3】開啟巴士時刻表
+            const openBusModal = (timetableId) => {
+                if (busTimetables[timetableId]) {
+                    currentBusSchedule.value = busTimetables[timetableId];
+                    showBusModal.value = true;
+                } else {
+                    alert('找不到對應的時刻表');
+                }
+            };
+
+            onMounted(() => expenseForm.value.date = new Date().toISOString().split('T')[0]);
+
+            return {
+                currentTab, days, selectedDayIndex, currentWeather,
+                currentDayItems, flights, hotels, shoppingList, expenses, totalExpense, sortedExpenses,
+                rate, calcJpy,
+                showModal, isEditing, form, showShopModal, shopForm, showExpenseModal, expenseForm,
+                showBusModal, currentBusSchedule,
+                locationGlossary, // Return location glossary
+                tabClass, getCategoryColor, transportIcon, getExpenseIcon,
+                openMap, openAddModal, editItem, saveItem, deleteItem, closeModal, moveItem,
+                handleImageUpload, saveShopItem, removeShoppingItem, saveExpense, removeExpense,
+                openBusModal // Return bus modal method
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
